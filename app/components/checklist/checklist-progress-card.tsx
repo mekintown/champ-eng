@@ -44,13 +44,14 @@ export function ChecklistProgressCard({
                 onChange={() => onToggleItem(item.id)}
                 type="checkbox"
               />
+              {/* Outstanding items stay red; completed ones fade to grey. */}
               <label
-                className={`grid cursor-pointer grid-cols-[20px_1fr] items-start gap-2.5 leading-[1.55] peer-focus-visible:[&>span:first-child]:ring-2 peer-focus-visible:[&>span:first-child]:ring-[#922D2E] peer-focus-visible:[&>span:first-child]:ring-offset-2 ${isComplete ? "font-bold text-[#922D2E]" : "text-black/75"}`}
+                className={`grid cursor-pointer grid-cols-[20px_1fr] items-start gap-2.5 leading-[1.55] peer-focus-visible:[&>span:first-child]:ring-2 peer-focus-visible:[&>span:first-child]:ring-[#922D2E] peer-focus-visible:[&>span:first-child]:ring-offset-2 ${isComplete ? "text-black/40" : "font-bold text-[#922D2E]"}`}
                 htmlFor={inputId}
               >
                 <span
                   aria-hidden="true"
-                  className={`grid size-[18px] place-items-center rounded-md border text-[10px] font-extrabold ${isComplete ? "border-[#922D2E] bg-[#922D2E] text-white shadow-[0_3px_7px_rgb(146_45_46_/_22%)]" : "border-[#BCBEC0] bg-white text-transparent"}`}
+                  className={`grid size-[18px] place-items-center rounded-md border text-[10px] font-extrabold ${isComplete ? "border-[#BCBEC0] bg-[#BCBEC0] text-white" : "border-[#922D2E] bg-white text-transparent"}`}
                 >
                   ✓
                 </span>

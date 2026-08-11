@@ -2,7 +2,7 @@ import Image from "next/image";
 
 import { Reveal } from "../reveal";
 import { SectionTitle } from "../section-title";
-import { pastCohortGalleryUrl, pastCohortMoments } from "./home-content";
+import { pastCohortMoments } from "./home-content";
 
 export function MomentsSection(): React.JSX.Element {
   return (
@@ -17,13 +17,9 @@ export function MomentsSection(): React.JSX.Element {
                   { src: moment.primaryImage, variant: "attendees" },
                   { src: moment.secondaryImage, variant: "activity" },
                 ].map(({ src, variant }) => (
-                  <a
-                    aria-label={`View ${moment.title} photos in the ChAMP Engineering gallery`}
-                    className="group relative block aspect-[4/3] overflow-hidden rounded-[16px] bg-black"
-                    href={pastCohortGalleryUrl}
+                  <div
+                    className="group relative aspect-[4/3] overflow-hidden rounded-[16px] bg-black"
                     key={src}
-                    rel="noreferrer"
-                    target="_blank"
                   >
                     <Image
                       alt={`${moment.title} ${variant}`}
@@ -32,7 +28,7 @@ export function MomentsSection(): React.JSX.Element {
                       sizes="(max-width: 1024px) 50vw, 480px"
                       src={src}
                     />
-                  </a>
+                  </div>
                 ))}
               </div>
               <div className="mt-2.5 flex items-center gap-2">

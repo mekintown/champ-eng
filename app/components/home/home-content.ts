@@ -40,9 +40,6 @@ export const menteeVisionValues = [
   { icon: FaPeopleGroup, label: "Community" },
 ];
 
-export const pastCohortGalleryUrl =
-  "https://sites.google.com/view/champ-engineering-8/gallery";
-
 export const pastCohortMoments = [
   {
     id: "orientation",

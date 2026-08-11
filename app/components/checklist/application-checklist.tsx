@@ -49,14 +49,9 @@ export function ApplicationChecklist({
       <p className="mb-3 text-[11px] font-extrabold tracking-[0.11em] text-[#922D2E] uppercase">
         ChAMP Engineering
       </p>
-      <div>
-        <h1 className="max-w-[330px] text-[40px] leading-[0.98] font-bold tracking-[0.035em]">
-          Application Checklist
-        </h1>
-        <p className="mt-[17px] inline-flex rounded-full bg-[#922D2E]/10 px-2.5 py-[7px] text-[11px] font-bold text-[#922D2E]">
-          {activeStage.dayLabel}
-        </p>
-      </div>
+      <h1 className="max-w-[330px] text-[40px] leading-[0.98] font-bold tracking-[0.035em]">
+        Application Checklist
+      </h1>
       <p className="mt-[18px] max-w-[350px] text-[14px] leading-[1.7] text-black/70">
         Explore each stage of the application journey. Swipe or use the tabs to
         see what happens next.

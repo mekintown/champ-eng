@@ -46,22 +46,16 @@ export function ApplicationStagePanel({
     >
       <div className="flex items-start justify-between gap-5 px-0.5">
         <div className="min-w-0">
-          <h2 className="text-[25px] leading-[1.08] font-bold tracking-[0.035em]">
-            {stage.title}
-          </h2>
-          <p className="mt-3 max-w-[335px] text-[13px] leading-[1.65] text-black/70">
+          <p className="max-w-[335px] text-[13px] leading-[1.65] text-black/70">
             {stage.description}
           </p>
         </div>
-        <aside className="w-[105px] shrink-0 pt-1 text-right">
-          <span className="block text-[10px] font-bold text-black/50">
-            {stage.dayLabel}
-          </span>
-          <span className="mt-1 block text-[10px] leading-[1.35] font-bold text-black/75">
+        <aside className="w-[130px] shrink-0 text-right">
+          <span className="block text-[14px] leading-[1.35] font-bold text-black/75">
             {stage.dateLabel}
           </span>
           <strong
-            className={`mt-2 inline-flex rounded-full px-2 py-1 text-[9px] font-extrabold whitespace-nowrap ${scheduleStatus?.isPast ? "bg-[#BCBEC0]/35 text-black/60" : "bg-[#922D2E]/10 text-[#922D2E]"}`}
+            className={`mt-2 inline-flex rounded-full px-2.5 py-1 text-[12px] font-extrabold whitespace-nowrap ${scheduleStatus?.isPast ? "bg-[#BCBEC0]/35 text-black/60" : "bg-[#922D2E]/10 text-[#922D2E]"}`}
           >
             {scheduleStatus?.message ?? "Upcoming"}
           </strong>

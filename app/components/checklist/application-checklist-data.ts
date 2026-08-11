@@ -12,7 +12,6 @@ export type ChecklistItem = {
 export type ApplicationStage = {
   id: string;
   label: string;
-  dayLabel: string;
   dateLabel: string;
   deadline: string;
   title: string;
@@ -25,7 +24,6 @@ export const applicationStages: ApplicationStage[] = [
   {
     id: "application-form",
     label: "Application Form",
-    dayLabel: "Step 1 of 4",
     dateLabel: "14 Aug – 6 Sep 2026",
     deadline: "2026-09-06",
     title: "สิ่งสำคัญของการทำ Application Form",
@@ -75,6 +73,12 @@ export const applicationStages: ApplicationStage[] = [
       {
         id: "prepare-transcript",
         text: "เตรียม Transcript เรียบร้อยแล้ว",
+        resources: [
+          {
+            href: "https://www2.reg.chula.ac.th/",
+            label: "CU Registrar",
+          },
+        ],
       },
       {
         id: "write-essay",
@@ -93,12 +97,11 @@ export const applicationStages: ApplicationStage[] = [
   {
     id: "shortlisting",
     label: "Shortlisting",
-    dayLabel: "Step 2 of 4",
     dateLabel: "3 Oct 2026",
     deadline: "2026-10-03",
     title: "Shortlisting",
     description:
-      "กิจกรรมสัมภาษณ์เพื่อพูดคุยและสอบถามข้อมูลเพิ่มเติมจากใบสมัคร พร้อมสัมภาษณ์กับ Senior OC เพื่อประเมินความสอดคล้องกับ Core Values ของโครงการ",
+      "กิจกรรมสัมภาษณ์กับทีมงานเพื่อประเมินความสอดคล้องกับโครงการ",
     checklist: [
       {
         id: "check-shortlisting-email",
@@ -126,7 +129,6 @@ export const applicationStages: ApplicationStage[] = [
   {
     id: "candidate-info",
     label: "Candidate Info",
-    dayLabel: "Step 3 of 4",
     dateLabel: "4 Oct 2026",
     deadline: "2026-10-04",
     title: "Candidate Info Session",
@@ -151,7 +153,6 @@ export const applicationStages: ApplicationStage[] = [
   {
     id: "pairing-day",
     label: "Pairing Day",
-    dayLabel: "Step 4 of 4",
     dateLabel: "10 Oct 2026",
     deadline: "2026-10-10",
     title: "Pairing Day",
