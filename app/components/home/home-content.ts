@@ -1,4 +1,27 @@
-import { FaPeopleGroup, FaRegCompass, FaRegHeart } from "react-icons/fa6";
+import {
+  FaCircleInfo,
+  FaFileLines,
+  FaPeopleGroup,
+  FaRegCompass,
+  FaRegHeart,
+  FaStar,
+  FaUsers,
+} from "react-icons/fa6";
+
+import { applicationStages } from "../checklist/application-checklist-data";
+
+/**
+ * Timeline nodes reuse the checklist stages so dates stay in one place, and
+ * deepen in colour from the first step to the last.
+ */
+export const timelineMilestones = applicationStages.map((stage, index) => ({
+  color: ["#E0817F", "#C4322F", "#922D2E", "#5C1C1D"][index],
+  icon: [FaFileLines, FaUsers, FaCircleInfo, FaStar][index],
+  id: stage.id,
+  label: stage.label,
+  dateLabel: stage.dateLabel,
+  step: index + 1,
+}));
 
 export const menteeQualities = [
   "กำลังค้นหาตัวเอง",
@@ -16,6 +39,9 @@ export const menteeVisionValues = [
   { icon: FaRegHeart, label: "Mentorship" },
   { icon: FaPeopleGroup, label: "Community" },
 ];
+
+export const pastCohortGalleryUrl =
+  "https://sites.google.com/view/champ-engineering-8/gallery";
 
 export const pastCohortMoments = [
   {

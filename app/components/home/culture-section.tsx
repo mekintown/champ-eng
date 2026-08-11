@@ -1,5 +1,7 @@
 import Image from "next/image";
 
+import champLogo from "@/public/champ-logo.png";
+
 import { Reveal } from "../reveal";
 import { SectionTitle } from "../section-title";
 import { menteeQualities } from "./home-content";
@@ -28,9 +30,8 @@ export function CultureSection(): React.JSX.Element {
           <Image
             alt="ChAMP Engineering"
             className="h-auto w-[164px]"
-            height={39}
-            src="/champ-logo.png"
-            width={148}
+            sizes="164px"
+            src={champLogo}
           />
           <em className="text-[22px] font-bold tracking-[0.035em] not-italic">
             Might be for you

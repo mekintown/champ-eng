@@ -1,5 +1,7 @@
 "use client";
 
+import { useRef } from "react";
+
 import { applicationStages } from "./application-checklist-data";
 import { ApplicationStagePanel } from "./application-stage-panel";
 import { ChecklistSchedule } from "./checklist-schedule";
@@ -28,6 +30,16 @@ export function ApplicationChecklist({
     toggleChecklistItem,
   } = useApplicationChecklist();
   const scheduleStatuses = useStageScheduleStatuses(applicationStages);
+  const stageViewRef = useRef<HTMLDivElement>(null);
+
+  /**
+   * The key dates sit below the stage panel, so bring the panel back into view
+   * when a date is picked — otherwise the change happens off-screen.
+   */
+  function selectStageFromSchedule(index: number): void {
+    selectStage(index);
+    stageViewRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 
   return (
     <section
@@ -50,32 +62,35 @@ export function ApplicationChecklist({
         see what happens next.
       </p>
 
-      <ChecklistStageTabs
-        activeIndex={activeIndex}
-        onKeyDown={handleStageNavigationKeyDown}
-        onSelectStage={selectStage}
-        stages={applicationStages}
-      />
+      <div ref={stageViewRef} className="scroll-mt-4">
+        <ChecklistStageTabs
+          activeIndex={activeIndex}
+          onKeyDown={handleStageNavigationKeyDown}
+          onSelectStage={selectStage}
+          stages={applicationStages}
+        />
 
-      <ApplicationStagePanel
-        completedItems={completedItems}
-        isFirstStage={activeIndex === 0}
-        isLastStage={activeIndex === applicationStages.length - 1}
-        key={activeStage.id}
-        onKeyDown={handleStageNavigationKeyDown}
-        onNextStage={showNextStage}
-        onPointerDown={handlePointerDown}
-        onPointerUp={handlePointerUp}
-        onPreviousStage={showPreviousStage}
-        onToggleItem={toggleChecklistItem}
-        scheduleStatus={scheduleStatuses?.[activeStage.id]}
-        stage={activeStage}
-      />
+        <ApplicationStagePanel
+          completedItems={completedItems}
+          isFirstStage={activeIndex === 0}
+          isLastStage={activeIndex === applicationStages.length - 1}
+          key={activeStage.id}
+          onKeyDown={handleStageNavigationKeyDown}
+          onNextStage={showNextStage}
+          onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
+          onPreviousStage={showPreviousStage}
+          onToggleItem={toggleChecklistItem}
+          scheduleStatus={scheduleStatuses?.[activeStage.id]}
+          stage={activeStage}
+        />
+      </div>
 
       {activeStage.showDressCode ? <DressCodePanel /> : null}
 
       <ChecklistSchedule
         activeIndex={activeIndex}
+        onSelectStage={selectStageFromSchedule}
         scheduleStatuses={scheduleStatuses}
         stages={applicationStages}
       />

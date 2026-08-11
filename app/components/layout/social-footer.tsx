@@ -7,6 +7,8 @@ import {
   FaYoutube,
 } from "react-icons/fa6";
 
+import champLogo from "@/public/champ-logo.png";
+
 import { champSocialLinks } from "../social-links";
 
 const socialLinks = [
@@ -70,9 +72,8 @@ export function SocialFooter(): React.JSX.Element {
       <Image
         alt="ChAMP Engineering"
         className="h-auto w-[94px] self-end brightness-0 invert"
-        height={39}
-        src="/champ-logo.png"
-        width={148}
+        sizes="94px"
+        src={champLogo}
       />
     </footer>
   );

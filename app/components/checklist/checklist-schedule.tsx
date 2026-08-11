@@ -3,12 +3,14 @@ import type { StageScheduleStatus } from "./stage-schedule";
 
 type ChecklistScheduleProps = {
   activeIndex: number;
+  onSelectStage: (index: number) => void;
   scheduleStatuses: Record<string, StageScheduleStatus> | null;
   stages: ApplicationStage[];
 };
 
 export function ChecklistSchedule({
   activeIndex,
+  onSelectStage,
   scheduleStatuses,
   stages,
 }: ChecklistScheduleProps): React.JSX.Element {
@@ -24,9 +26,12 @@ export function ChecklistSchedule({
           const isActive = activeIndex === index;
 
           return (
-            <article
-              className={`min-w-0 rounded-xl border p-2 text-left ${isActive ? "border-[#922D2E] bg-[#922D2E] text-white shadow-[0_8px_16px_rgb(146_45_46_/_18%)]" : "border-[#BCBEC0]/70 bg-white/70 text-black"}`}
+            <button
+              aria-current={isActive ? "step" : undefined}
+              className={`min-w-0 cursor-pointer rounded-xl border p-2 text-left transition-colors ${isActive ? "border-[#922D2E] bg-[#922D2E] text-white shadow-[0_8px_16px_rgb(146_45_46_/_18%)]" : "border-[#BCBEC0]/70 bg-white/70 text-black hover:border-[#922D2E]"}`}
               key={stage.id}
+              onClick={() => onSelectStage(index)}
+              type="button"
             >
               <span
                 className={`block text-[9px] leading-[1.2] font-extrabold ${isActive ? "text-white" : "text-[#922D2E]"}`}
@@ -43,7 +48,7 @@ export function ChecklistSchedule({
               >
                 {status?.message ?? "Upcoming"}
               </span>
-            </article>
+            </button>
           );
         })}
       </div>

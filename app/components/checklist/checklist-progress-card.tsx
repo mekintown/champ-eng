@@ -33,27 +33,30 @@ export function ChecklistProgressCard({
       <ul className="mt-4 grid list-none p-0">
         {stage.checklist.map((item, index) => {
           const inputId = `${stage.id}-${index}`;
+          const isComplete = completedItems.includes(item.id);
 
           return (
             <li className="border-b border-[#BCBEC0]/35 py-3 text-xs last:border-0" key={item.id}>
               <input
-                checked={completedItems.includes(item.id)}
+                checked={isComplete}
                 className="peer sr-only"
                 id={inputId}
                 onChange={() => onToggleItem(item.id)}
                 type="checkbox"
               />
               <label
-                className={`grid cursor-pointer grid-cols-[20px_1fr] items-start gap-2.5 leading-[1.55] peer-focus-visible:[&>span]:ring-2 peer-focus-visible:[&>span]:ring-[#922D2E] peer-focus-visible:[&>span]:ring-offset-2 ${completedItems.includes(item.id) ? "font-bold text-[#922D2E]" : "text-black/75"}`}
+                className={`grid cursor-pointer grid-cols-[20px_1fr] items-start gap-2.5 leading-[1.55] peer-focus-visible:[&>span:first-child]:ring-2 peer-focus-visible:[&>span:first-child]:ring-[#922D2E] peer-focus-visible:[&>span:first-child]:ring-offset-2 ${isComplete ? "font-bold text-[#922D2E]" : "text-black/75"}`}
                 htmlFor={inputId}
               >
                 <span
                   aria-hidden="true"
-                  className={`grid size-[18px] place-items-center rounded-md border text-[10px] font-extrabold ${completedItems.includes(item.id) ? "border-[#922D2E] bg-[#922D2E] text-white shadow-[0_3px_7px_rgb(146_45_46_/_22%)]" : "border-[#BCBEC0] bg-white text-transparent"}`}
+                  className={`grid size-[18px] place-items-center rounded-md border text-[10px] font-extrabold ${isComplete ? "border-[#922D2E] bg-[#922D2E] text-white shadow-[0_3px_7px_rgb(146_45_46_/_22%)]" : "border-[#BCBEC0] bg-white text-transparent"}`}
                 >
                   ✓
                 </span>
-                {item.text}
+                <span className={isComplete ? "line-through" : undefined}>
+                  {item.text}
+                </span>
               </label>
               {item.resources ? (
                 <div className="mt-2 ml-[30px] flex flex-wrap gap-2">

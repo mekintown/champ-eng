@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import champLogo from "@/public/champ-logo.png";
+
 const navigationItems = [
   { href: "/", label: "Home" },
   { href: "/checklist", label: "Checklist" },
@@ -18,10 +20,9 @@ export function SiteHeader(): React.JSX.Element {
         <Image
           alt="ChAMP Engineering"
           className="h-auto w-[110px]"
-          height={39}
-          priority
-          src="/champ-logo.png"
-          width={148}
+          preload
+          sizes="110px"
+          src={champLogo}
         />
       </Link>
       <nav

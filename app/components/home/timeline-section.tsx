@@ -1,26 +1,52 @@
 import { Reveal } from "../reveal";
+import { timelineMilestones } from "./home-content";
+
+const lastIndex = timelineMilestones.length - 1;
 
 export function TimelineSection(): React.JSX.Element {
   return (
     <Reveal>
-      <section
-        aria-label="ChAMP timeline"
-        className="mx-7 grid min-h-[214px] place-content-center justify-items-center rounded-[20px] bg-black [background-image:linear-gradient(135deg,rgb(255_255_255_/_12%),transparent)] px-7 py-8 text-center text-white shadow-[0_18px_36px_rgb(0_0_0_/_14%)]"
-      >
-        <span className="text-[10px] font-extrabold tracking-[0.13em] text-[#BCBEC0] uppercase">
-          ChAMP Engineering
-        </span>
-        <strong className="mt-2 text-[30px] font-bold tracking-[0.035em]">
-          Timeline
-        </strong>
-        <div aria-hidden="true" className="mt-[18px] flex items-center gap-2">
-          <i className="h-1 w-[46px] rounded-full bg-[#922D2E] animate-[timeline-pulse_2.4s_ease-in-out_infinite]" />
-          <i className="h-1 w-[46px] rounded-full bg-[#BCBEC0] animate-[timeline-pulse_2.4s_ease-in-out_300ms_infinite]" />
-          <i className="h-1 w-[46px] rounded-full bg-white animate-[timeline-pulse_2.4s_ease-in-out_600ms_infinite]" />
-        </div>
-        <p className="mt-[14px] text-[11px] text-[#BCBEC0]">
-          Apply · Learn · Pair · Celebrate
-        </p>
+      <section aria-label="ChAMP timeline" className="px-7 py-10">
+        {/* No column gap: the connector halves must meet flush between cells. */}
+        <ol className="grid grid-cols-4 grid-rows-[auto_auto_auto]">
+          {timelineMilestones.map(
+            ({ color, dateLabel, icon: Icon, id, label, step }, index) => (
+              <li className="row-span-3 grid grid-rows-subgrid" key={id}>
+                <p className="px-1 text-center text-[9px] leading-[1.35] font-extrabold tracking-[0.06em] uppercase sm:px-2 sm:text-[11px]">
+                  <span className="block text-[11px] sm:text-[13px]">
+                    {step}
+                  </span>
+                  {label}
+                </p>
+                <div className="relative flex items-center justify-center py-3.5">
+                  {index > 0 ? (
+                    <span
+                      aria-hidden="true"
+                      className="absolute top-1/2 right-1/2 left-0 h-[3px] -translate-y-1/2"
+                      style={{ backgroundColor: color }}
+                    />
+                  ) : null}
+                  {index < lastIndex ? (
+                    <span
+                      aria-hidden="true"
+                      className="absolute top-1/2 right-0 left-1/2 h-[3px] -translate-y-1/2"
+                      style={{ backgroundColor: color }}
+                    />
+                  ) : null}
+                  <span
+                    className="relative grid size-11 place-items-center rounded-full text-base text-white sm:size-16 sm:text-2xl"
+                    style={{ backgroundColor: color }}
+                  >
+                    <Icon aria-hidden="true" />
+                  </span>
+                </div>
+                <p className="px-1 text-center text-[9px] leading-[1.35] font-semibold text-black/70 uppercase sm:px-2 sm:text-[12px]">
+                  {dateLabel}
+                </p>
+              </li>
+            ),
+          )}
+        </ol>
       </section>
     </Reveal>
   );

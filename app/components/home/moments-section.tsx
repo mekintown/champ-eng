@@ -2,7 +2,7 @@ import Image from "next/image";
 
 import { Reveal } from "../reveal";
 import { SectionTitle } from "../section-title";
-import { pastCohortMoments } from "./home-content";
+import { pastCohortGalleryUrl, pastCohortMoments } from "./home-content";
 
 export function MomentsSection(): React.JSX.Element {
   return (
@@ -13,24 +13,27 @@ export function MomentsSection(): React.JSX.Element {
           {pastCohortMoments.map((moment) => (
             <article key={moment.id}>
               <div className="grid grid-cols-2 gap-2.5">
-                <div className="group relative aspect-[4/3] overflow-hidden rounded-[16px] bg-black">
-                  <Image
-                    alt={`${moment.title} attendees`}
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    fill
-                    sizes="(max-width: 480px) 50vw, 220px"
-                    src={moment.primaryImage}
-                  />
-                </div>
-                <div className="group relative aspect-[4/3] overflow-hidden rounded-[16px] bg-black">
-                  <Image
-                    alt={`${moment.title} activity`}
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    fill
-                    sizes="(max-width: 480px) 50vw, 220px"
-                    src={moment.secondaryImage}
-                  />
-                </div>
+                {[
+                  { src: moment.primaryImage, variant: "attendees" },
+                  { src: moment.secondaryImage, variant: "activity" },
+                ].map(({ src, variant }) => (
+                  <a
+                    aria-label={`View ${moment.title} photos in the ChAMP Engineering gallery`}
+                    className="group relative block aspect-[4/3] overflow-hidden rounded-[16px] bg-black"
+                    href={pastCohortGalleryUrl}
+                    key={src}
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    <Image
+                      alt={`${moment.title} ${variant}`}
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      fill
+                      sizes="(max-width: 1024px) 50vw, 480px"
+                      src={src}
+                    />
+                  </a>
+                ))}
               </div>
               <div className="mt-2.5 flex items-center gap-2">
                 <span className="grid size-[23px] shrink-0 place-items-center rounded-full bg-[#922D2E] text-[9px] font-bold text-white">
