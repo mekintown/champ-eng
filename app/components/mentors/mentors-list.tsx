@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { FaCircleInfo } from "react-icons/fa6";
 
 import { IndustryFilter } from "./industry-filter";
 import { MentorCard } from "./mentor-card";
@@ -67,6 +68,16 @@ export function MentorsList({ id }: MentorsListProps): React.JSX.Element {
           />
         </div>
       </div>
+
+      {cohort === "all" ? (
+        <p className="mt-5 flex items-start gap-2 rounded-lg border border-[#BCBEC0]/70 bg-[#FBF6F6] px-3 py-2 text-[12px] leading-[1.6] text-black/65">
+          <FaCircleInfo
+            aria-hidden="true"
+            className="mt-[3px] shrink-0 text-[#9D0512]"
+          />
+          ข้อมูลของ Ex-mentor อาจไม่อัปเดตเป็นปัจจุบัน
+        </p>
+      ) : null}
 
       {visibleMentors.length > 0 ? (
         <ul className="mt-7 grid grid-cols-2 gap-x-4 gap-y-5 min-[480px]:grid-cols-[repeat(auto-fill,minmax(150px,1fr))] sm:gap-x-5 sm:gap-y-6">

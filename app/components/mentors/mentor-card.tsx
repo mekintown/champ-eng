@@ -1,6 +1,14 @@
 import Image from "next/image";
 
+import {
+  defaultMentorPictureFocus,
+  mentorPictureFocus,
+} from "./mentor-picture-focus";
 import type { Mentor } from "./mentors-data";
+
+/** ChAMP CI brand gradient (Figma "CI Element" → brand). */
+const cardBackground =
+  "bg-[linear-gradient(180deg,#9D0512_0%,#9D0512_44%,#65090C_72%,#0E0000_100%)]";
 
 type MentorCardProps = {
   mentor: Mentor;
@@ -8,19 +16,29 @@ type MentorCardProps = {
 
 export function MentorCard({ mentor }: MentorCardProps): React.JSX.Element {
   const hasCompanyLogo = Boolean(mentor.companyLogoUrl);
+  const focus = mentorPictureFocus[mentor.id] ?? defaultMentorPictureFocus;
+  const zoom = focus.zoom ?? 1;
 
   return (
-    <article className="flex w-full flex-col overflow-hidden rounded-lg bg-[linear-gradient(180deg,#D15C5C_0%,#D15C5C_44%,#C53737_72%,#7D2424_100%)] p-1 shadow-[0_6px_16px_rgb(0_0_0_/_14%)] transition-transform hover:-translate-y-0.5">
+    <article
+      className={`flex w-full flex-col overflow-hidden rounded-lg ${cardBackground} p-1 shadow-[0_6px_16px_rgb(0_0_0_/_18%)] transition-transform hover:-translate-y-0.5`}
+    >
       <div className="relative aspect-square w-full overflow-hidden rounded bg-[#D9D9D9]">
         <Image
           alt={`${mentor.nickname} — ${mentor.fullName}`}
           className="object-cover"
           fill
-          sizes="(max-width: 640px) 45vw, 200px"
+          sizes="(max-width: 640px) 50vw, 360px"
           src={mentor.mentorPictureUrl}
-          /* Mentor photos come from arbitrary external hosts, so they skip the
-             optimizer instead of needing every host in images.remotePatterns. */
-          unoptimized
+          style={
+            zoom > 1
+              ? {
+                  objectPosition: focus.position,
+                  transform: `scale(${zoom})`,
+                  transformOrigin: focus.origin ?? focus.position,
+                }
+              : { objectPosition: focus.position }
+          }
         />
       </div>
 
@@ -31,7 +49,7 @@ export function MentorCard({ mentor }: MentorCardProps): React.JSX.Element {
         <p className="text-[11px] leading-[1.2]">{mentor.fullName}</p>
 
         <p className="flex flex-wrap items-center justify-center gap-1.5 text-[12px] leading-none font-bold">
-          <span className="rounded-lg bg-[#F6DC81] px-2 py-0.5 text-[#7D2424]">
+          <span className="rounded-lg bg-[#F6DC81] px-2 py-0.5 text-[#65090C]">
             {mentor.department}
           </span>
           <span>Intania {mentor.classYear}</span>
@@ -52,7 +70,6 @@ export function MentorCard({ mentor }: MentorCardProps): React.JSX.Element {
                 fill
                 sizes="80px"
                 src={mentor.companyLogoUrl}
-                unoptimized
               />
             </span>
           ) : null}

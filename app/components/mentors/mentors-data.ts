@@ -52,20 +52,24 @@ export type Mentor = {
 
 /**
  * Mentor roster sourced from the ChAMP Engineering mentor-intake Airtable base
- * (tables Champ9 / Champ7 / Champ6 — Champ8 does not exist in that base).
+ * (tables Champ9 / Champ8 / Champ7 / Champ6).
  *
  * Merge rules:
  * - Records are deduplicated by real name (`ชื่อ-นามสกุล` / `ชื่อจริง`), ignoring
  *   title prefixes (ดร./นาย/นาง/นางสาว) and whitespace differences.
  * - When the same person appears in multiple tables, scalar fields (nickname,
  *   fullName, position, companyName, classYear) are taken from the
- *   highest-priority table they appear in: Champ9 > Champ7 > Champ6.
+ *   highest-priority table they appear in: Champ9 > Champ8 > Champ7 > Champ6.
  * - `department` and `industries` are person attributes that do not change
- *   year to year, so they fall back to Champ9 then Champ6 (Champ7 has neither
- *   field in its schema) even when a lower-priority table is used for the
- *   other fields.
+ *   year to year, so they fall back through Champ9 -> Champ8 -> Champ7 ->
+ *   Champ6 (Champ7 has neither field in its schema) even when a
+ *   lower-priority table is used for the other fields.
  * - `mentorYears` is the union of every table (program year) the person
  *   appears in, not just the priority table.
+ * - IDs are stable across re-merges: mentor-01..71 are pinned to the same
+ *   people as the original Champ9/Champ7/Champ6 merge (so previously
+ *   downloaded photo filenames keep matching); mentor-72..76 are the 5
+ *   mentors that only appear in Champ8.
  * - `mentorPictureUrl` points at `/mentors/{id}.{ext}` for every mentor. The
  *   actual image files are NOT bundled here — Airtable serves attachments via
  *   short-lived signed URLs that this environment's network sandbox can't
@@ -74,8 +78,6 @@ export type Mentor = {
  *   every photo into `public/mentors/` at these exact filenames.
  * - `companyLogoUrl` is left unset for every mentor (no logo assets pulled in
  *   this pass).
- * - `department` is blank for the 8 mentors who only appear in Champ7, which
- *   has no department column at all.
  * - `industries` is best-effort, keyword-matched from each table's free-text
  *   industry field (plus role/company as a fallback signal). Treat these as a
  *   useful first pass, not a verified taxonomy — some entries may be missing
@@ -92,7 +94,7 @@ export const mentors: Mentor[] = [
     position: "Chief Digital Officer",
     companyName: "King Power",
     industries: ["tech-and-innovation", "commercial-and-marketing"],
-    mentorYears: [9],
+    mentorYears: [8, 9],
   },
   {
     id: "mentor-02",
@@ -116,7 +118,7 @@ export const mentors: Mentor[] = [
     position: "Founder",
     companyName: "Whiteline Group",
     industries: ["commercial-and-marketing", "entrepreneur-and-start-up"],
-    mentorYears: [7, 9],
+    mentorYears: [7, 8, 9],
   },
   {
     id: "mentor-04",
@@ -140,7 +142,7 @@ export const mentors: Mentor[] = [
     position: "Co-owner, CCO, Digital Strategist",
     companyName: "THINK BIG CONSULTING, THINK BIT, THE BLOW DRY BAR",
     industries: ["tech-and-innovation", "commercial-and-marketing"],
-    mentorYears: [7, 9],
+    mentorYears: [7, 8, 9],
   },
   {
     id: "mentor-06",
@@ -152,11 +154,11 @@ export const mentors: Mentor[] = [
     position: "Co-Founder",
     companyName: "บริษัท 425 ดีกรี จำกัด",
     industries: ["commercial-and-marketing", "entrepreneur-and-start-up"],
-    mentorYears: [7, 9],
+    mentorYears: [7, 8, 9],
   },
   {
     id: "mentor-07",
-    mentorPictureUrl: "/mentors/mentor-07.jpg",
+    mentorPictureUrl: "/mentors/mentor-07.jpeg",
     nickname: "พี่ตั๋ง",
     fullName: "พรเทพ ชูพันธุ์",
     department: "EE",
@@ -164,7 +166,7 @@ export const mentors: Mentor[] = [
     position: "Corporate Strategy and Investment",
     companyName: "Gulf Development Public Company Limited",
     industries: ["tech-and-innovation", "financial-and-investment"],
-    mentorYears: [7, 9],
+    mentorYears: [7, 8, 9],
   },
   {
     id: "mentor-08",
@@ -176,7 +178,7 @@ export const mentors: Mentor[] = [
     position: "Digital Platform Manager",
     companyName: "SCG Cement",
     industries: ["tech-and-innovation", "manufacturing"],
-    mentorYears: [7, 9],
+    mentorYears: [7, 8, 9],
   },
   {
     id: "mentor-09",
@@ -212,7 +214,7 @@ export const mentors: Mentor[] = [
     position: "Co-Founder",
     companyName: "Cleverse",
     industries: ["tech-and-innovation", "entrepreneur-and-start-up"],
-    mentorYears: [7, 9],
+    mentorYears: [7, 8, 9],
   },
   {
     id: "mentor-12",
@@ -224,7 +226,7 @@ export const mentors: Mentor[] = [
     position: "Chief Executive Officer",
     companyName: "InnovestX Securities Co., Ltd.",
     industries: ["financial-and-investment"],
-    mentorYears: [9],
+    mentorYears: [8, 9],
   },
   {
     id: "mentor-13",
@@ -236,7 +238,7 @@ export const mentors: Mentor[] = [
     position: "Cofounder and CEO",
     companyName: "Primo World Co., Ltd.",
     industries: ["tech-and-innovation", "entrepreneur-and-start-up"],
-    mentorYears: [9],
+    mentorYears: [8, 9],
   },
   {
     id: "mentor-14",
@@ -248,7 +250,7 @@ export const mentors: Mentor[] = [
     position: "MD",
     companyName: "Skooldio",
     industries: ["tech-and-innovation", "manufacturing", "commercial-and-marketing", "entrepreneur-and-start-up", "food-and-beverage"],
-    mentorYears: [7, 9],
+    mentorYears: [7, 8, 9],
   },
   {
     id: "mentor-15",
@@ -260,7 +262,7 @@ export const mentors: Mentor[] = [
     position: "เลขานุการของเลขาธิการคณะกรรมการส่งเสริมการลงทุน",
     companyName: "สำนักงานคณะกรรมการส่งเสริมการลงทุน (BOI)",
     industries: ["financial-and-investment"],
-    mentorYears: [7, 9],
+    mentorYears: [7, 8, 9],
   },
   {
     id: "mentor-16",
@@ -284,7 +286,7 @@ export const mentors: Mentor[] = [
     position: "MD, Founder",
     companyName: "บริษัท ไฟว์วันวัน ครีเอชั่น จำกัด, บริษัท ไฟว์วันวัน ทรานส์ โซลูชั่น จำกัด",
     industries: ["engineering", "entrepreneur-and-start-up"],
-    mentorYears: [7, 9],
+    mentorYears: [7, 8, 9],
   },
   {
     id: "mentor-18",
@@ -296,7 +298,7 @@ export const mentors: Mentor[] = [
     position: "Head of Innovation",
     companyName: "Learn Corporation",
     industries: ["tech-and-innovation"],
-    mentorYears: [9],
+    mentorYears: [8, 9],
   },
   {
     id: "mentor-19",
@@ -308,7 +310,7 @@ export const mentors: Mentor[] = [
     position: "Co-Founder",
     companyName: "Guss Damn Good",
     industries: ["entrepreneur-and-start-up", "food-and-beverage"],
-    mentorYears: [9],
+    mentorYears: [8, 9],
   },
   {
     id: "mentor-20",
@@ -320,7 +322,7 @@ export const mentors: Mentor[] = [
     position: "Business Development Director",
     companyName: "ฟาร์มาซูติคอลส์ แอนด์ เมดิคอลซัพพลาย (PMS)",
     industries: ["manufacturing", "food-and-beverage"],
-    mentorYears: [7, 9],
+    mentorYears: [7, 8, 9],
   },
   {
     id: "mentor-21",
@@ -332,7 +334,7 @@ export const mentors: Mentor[] = [
     position: "CEO & Co-Founder",
     companyName: "Tokenomist",
     industries: ["tech-and-innovation", "entrepreneur-and-start-up", "financial-and-investment"],
-    mentorYears: [9],
+    mentorYears: [8, 9],
   },
   {
     id: "mentor-22",
@@ -344,7 +346,7 @@ export const mentors: Mentor[] = [
     position: "VP of Retail & FMCG Business",
     companyName: "GQ Group",
     industries: ["manufacturing", "commercial-and-marketing"],
-    mentorYears: [9],
+    mentorYears: [8, 9],
   },
   {
     id: "mentor-23",
@@ -356,7 +358,7 @@ export const mentors: Mentor[] = [
     position: "Senior Vice President, Plant Head bangkok",
     companyName: "Pandora Production Thailand",
     industries: ["engineering", "manufacturing"],
-    mentorYears: [7, 9],
+    mentorYears: [7, 8, 9],
   },
   {
     id: "mentor-24",
@@ -368,7 +370,7 @@ export const mentors: Mentor[] = [
     position: "Manufacturing and Digital Capability Transformation Director",
     companyName: "Procter & Gamble",
     industries: ["tech-and-innovation", "manufacturing"],
-    mentorYears: [9],
+    mentorYears: [8, 9],
   },
   {
     id: "mentor-25",
@@ -392,7 +394,7 @@ export const mentors: Mentor[] = [
     position: "Chief People Officer and Head of Strategy",
     companyName: "Thai Group Holdings",
     industries: ["financial-and-investment"],
-    mentorYears: [9],
+    mentorYears: [8, 9],
   },
   {
     id: "mentor-27",
@@ -404,7 +406,7 @@ export const mentors: Mentor[] = [
     position: "Production Manager",
     companyName: "SCGP",
     industries: ["manufacturing"],
-    mentorYears: [7, 9],
+    mentorYears: [7, 8, 9],
   },
   {
     id: "mentor-28",
@@ -459,12 +461,12 @@ export const mentors: Mentor[] = [
     mentorPictureUrl: "/mentors/mentor-32.jpg",
     nickname: "พี่กวาง",
     fullName: "ณัฐธิดา เจริญเกียรติบวร",
-    department: "",
+    department: "MET",
     classYear: 91,
     position: "Regional Head of Digital Media",
     companyName: "Intrepid",
     industries: ["tech-and-innovation", "commercial-and-marketing"],
-    mentorYears: [7],
+    mentorYears: [7, 8],
   },
   {
     id: "mentor-33",
@@ -482,13 +484,13 @@ export const mentors: Mentor[] = [
     id: "mentor-34",
     mentorPictureUrl: "/mentors/mentor-34.jpeg",
     nickname: "พี่รัมย์",
-    fullName: "ดร.ศรุต วานิชพันธ์ุ",
+    fullName: "ดร. ศรุต วานิชพันธ์ุ",
     department: "EE",
     classYear: 79,
     position: "Senior Director",
     companyName: "Sea (Thailand)",
     industries: ["tech-and-innovation"],
-    mentorYears: [6, 7],
+    mentorYears: [6, 7, 8],
   },
   {
     id: "mentor-35",
@@ -507,12 +509,12 @@ export const mentors: Mentor[] = [
     mentorPictureUrl: "/mentors/mentor-36.jpg",
     nickname: "พี่เหมียว",
     fullName: "พรรสิฐฏ์ จิตสอาดกุล",
-    department: "",
+    department: "CIVIL",
     classYear: 86,
     position: "Founder , MD loop",
     companyName: "MP Synergy Co.,Ltd. , Ergotrend Brand",
     industries: ["commercial-and-marketing", "entrepreneur-and-start-up"],
-    mentorYears: [7],
+    mentorYears: [7, 8],
   },
   {
     id: "mentor-37",
@@ -583,8 +585,8 @@ export const mentors: Mentor[] = [
     classYear: 72,
     position: "ประธานคณะกรรมการตรวจสอบ, บมจ. เซปเป้",
     companyName: "Sappe",
-    industries: ["financial-and-investment"],
-    mentorYears: [6, 7],
+    industries: ["engineering", "financial-and-investment"],
+    mentorYears: [6, 7, 8],
   },
   {
     id: "mentor-43",
@@ -620,7 +622,7 @@ export const mentors: Mentor[] = [
     position: "Managing Director",
     companyName: "Digital Health Venture, Samitivej",
     industries: ["tech-and-innovation"],
-    mentorYears: [6, 7],
+    mentorYears: [6, 7, 8],
   },
   {
     id: "mentor-46",
@@ -630,9 +632,9 @@ export const mentors: Mentor[] = [
     department: "PETRO",
     classYear: 86,
     position: "CEO",
-    companyName: "Purple Ventures (Robinhood)",
+    companyName: "SCB10X",
     industries: ["financial-and-investment"],
-    mentorYears: [6, 7],
+    mentorYears: [6, 7, 8],
   },
   {
     id: "mentor-47",
@@ -641,22 +643,22 @@ export const mentors: Mentor[] = [
     fullName: "วรภัทร ชวนะนิกุล",
     department: "ME",
     classYear: 79,
-    position: "Chief Financial Officer and Chief Strategy Officer",
-    companyName: "Boonrawd Trading; MD, Singha Ventures",
+    position: "CEO",
+    companyName: "Singha Ventures; CFO/ CSO Boonrawd Trading; Partner, BMB Capital",
     industries: ["food-and-beverage", "financial-and-investment"],
-    mentorYears: [6, 7],
+    mentorYears: [6, 7, 8],
   },
   {
     id: "mentor-48",
     mentorPictureUrl: "/mentors/mentor-48.jpg",
     nickname: "พี่เอิร์ธ",
-    fullName: "ดร.รัฐศรัณย์ ธนไพศาลกิจ",
+    fullName: "ดร. รัฐศรัณย์ ธนไพศาลกิจ",
     department: "IE",
     classYear: 89,
-    position: "Senior Vice President-Head of Derivatives",
-    companyName: "The Stock Exchange of Thailand",
+    position: "Head of Investment Strategy & Trading Products",
+    companyName: "InnovestX Securities Co.,Ltd.",
     industries: ["financial-and-investment"],
-    mentorYears: [6, 7],
+    mentorYears: [6, 7, 8],
   },
   {
     id: "mentor-49",
@@ -665,10 +667,10 @@ export const mentors: Mentor[] = [
     fullName: "ปกรณ์ ธรรมภิมุขวัฒนา",
     department: "ME",
     classYear: 79,
-    position: "Operations Director Southeast Asia",
+    position: "Supply Chain Director",
     companyName: "Danone Specialized Nutrition",
-    industries: ["food-and-beverage"],
-    mentorYears: [6, 7],
+    industries: ["manufacturing", "food-and-beverage"],
+    mentorYears: [6, 7, 8],
   },
   {
     id: "mentor-50",
@@ -680,7 +682,7 @@ export const mentors: Mentor[] = [
     position: "Founder & CEO",
     companyName: "PI Carbon Co., Ltd.",
     industries: ["tech-and-innovation", "entrepreneur-and-start-up"],
-    mentorYears: [6, 7],
+    mentorYears: [6, 7, 8],
   },
   {
     id: "mentor-51",
@@ -933,6 +935,66 @@ export const mentors: Mentor[] = [
     companyName: "SnapLogic",
     industries: ["tech-and-innovation"],
     mentorYears: [6],
+  },
+  {
+    id: "mentor-72",
+    mentorPictureUrl: "/mentors/mentor-72.jpg",
+    nickname: "พี่ณัฐ",
+    fullName: "ณัฐวุฒิ อมรวิวัฒน์",
+    department: "EE",
+    classYear: 73,
+    position: "Chairman of True Digital Group and Board of Director of True Corp, Ascend Money, True IDC",
+    companyName: "True Corporation (public) Company Limited",
+    industries: ["tech-and-innovation"],
+    mentorYears: [8],
+  },
+  {
+    id: "mentor-73",
+    mentorPictureUrl: "/mentors/mentor-73.jpg",
+    nickname: "พี่หลุยส์",
+    fullName: "ธีรพจน์ จรสโรจน์กุล",
+    department: "IE",
+    classYear: 78,
+    position: "Supervisor Board, ROC Spicer Ltd. Taiwan, Plant Manager, Dana Spicer (Thailand)",
+    companyName: "Dana Spicer",
+    industries: ["engineering"],
+    mentorYears: [8],
+  },
+  {
+    id: "mentor-74",
+    mentorPictureUrl: "/mentors/mentor-74.jpg",
+    nickname: "พี่ช้าง",
+    fullName: "มหิศร ว่องผาติ",
+    department: "CP",
+    classYear: 84,
+    position: "Founder",
+    companyName: "HG Robotics Co., Ltd.",
+    industries: ["entrepreneur-and-start-up"],
+    mentorYears: [8],
+  },
+  {
+    id: "mentor-75",
+    mentorPictureUrl: "/mentors/mentor-75.jpg",
+    nickname: "พี่โอ๊ต",
+    fullName: "วรวรรณ ไชยกำเนิด",
+    department: "ME",
+    classYear: 76,
+    position: "ex CEO, ex Director",
+    companyName: "Rojukiss International PCL",
+    industries: ["manufacturing"],
+    mentorYears: [8],
+  },
+  {
+    id: "mentor-76",
+    mentorPictureUrl: "/mentors/mentor-76.webp",
+    nickname: "พี่เบนซ์",
+    fullName: "สัมฤทธิ์ สิทธิวรานุวงศ์",
+    department: "ME",
+    classYear: 83,
+    position: "Chief Executive Officer & Founder",
+    companyName: "Solar D Corporation Co., Ltd.",
+    industries: ["engineering", "entrepreneur-and-start-up"],
+    mentorYears: [8],
   },
 ];
 
