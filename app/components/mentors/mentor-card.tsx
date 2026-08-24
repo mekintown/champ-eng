@@ -60,7 +60,7 @@ export function MentorCard({ mentor }: MentorCardProps): React.JSX.Element {
         </p>
 
         <div
-          className={`mt-auto flex w-full items-center gap-1.5 pt-1.5 ${hasCompanyLogo ? "" : "justify-center"}`}
+          className={`mt-auto flex w-full items-center gap-1.5 pt-2 ${hasCompanyLogo ? "" : "justify-center"}`}
         >
           {mentor.companyLogoUrl ? (
             <span className="relative h-7 w-[42%] shrink-0 overflow-hidden rounded bg-white">
@@ -74,7 +74,7 @@ export function MentorCard({ mentor }: MentorCardProps): React.JSX.Element {
             </span>
           ) : null}
           <p
-            className={`text-[9px] leading-[1.25] ${hasCompanyLogo ? "text-left" : "text-center"}`}
+            className={`leading-[1.3] font-semibold ${hasCompanyLogo ? "text-left text-[10px]" : "text-center text-[11.5px]"}`}
           >
             {mentor.companyName}
           </p>
