@@ -32,15 +32,24 @@ export const mentorIndustryLabels: Record<MentorIndustry, string> = {
 
 export type Mentor = {
   id: string;
-  /** Portrait shown at the top of the card. */
-  mentorPictureUrl: string;
+  /**
+   * Portrait shown at the top of the card. Optional — the ChAMP 1-5 roster came
+   * from a spreadsheet with no attachments, so those mentors have no photo yet.
+   */
+  mentorPictureUrl?: string;
   /** Thai nickname, rendered as the card headline (e.g. "พี่เอิร์ธ"). */
   nickname: string;
   fullName: string;
-  /** Chula Engineering department abbreviation shown in the pill (e.g. "ICE"). */
-  department: string;
-  /** Intania cohort number, rendered as "Intania {classYear}". */
-  classYear: number;
+  /**
+   * Chula Engineering department abbreviation shown in the pill (e.g. "ICE").
+   * Optional — some ChAMP year sheets never recorded a major.
+   */
+  department?: string;
+  /**
+   * Intania cohort number, rendered as "Intania {classYear}".
+   * Optional — some ChAMP year sheets never recorded it.
+   */
+  classYear?: number;
   position: string;
   /** Optional — plenty of mentors have no usable logo asset. */
   companyLogoUrl?: string;
@@ -51,15 +60,34 @@ export type Mentor = {
 };
 
 /**
- * Mentor roster sourced from the ChAMP Engineering mentor-intake Airtable base
- * (tables Champ9 / Champ8 / Champ7 / Champ6).
+ * Mentor roster sourced from two places:
+ * - ChAMP Engineering mentor-intake Airtable base (tables Champ9 / Champ8 /
+ *   Champ7 / Champ6) — mentors 01..76.
+ * - The "ChAMP Eng mentor" Google Sheet (summary tab listing ChAMP Eng 1..8
+ *   TRUE/FALSE membership, plus one tab per program year) — mentors 77..127,
+ *   i.e. everyone who only ever mentored in ChAMP 1-5.
+ *
+ * ChAMP 1-5 caveats (the sheet simply does not carry these columns):
+ * - No `mentorPictureUrl` and no `companyLogoUrl` for any of mentors 77..127.
+ * - `department` / `classYear` come from whichever year tab recorded them
+ *   (ChAMP 1 and ChAMP 3 have Major + Intania; ChAMP 4 and ChAMP 5 have Intania
+ *   only; ChAMP 2 has neither). The 12 majors and 2 Intania numbers no tab
+ *   recorded were supplied by the ChAMP team and are not traceable to the
+ *   sheet — re-deriving this file from the sheet alone would drop them again.
+ *   Both fields stay optional so future gaps do not break the card.
+ * - `industries` for 77..127 is keyword-inferred from position + company only,
+ *   since the ChAMP 1-5 tabs have no industry field at all.
  *
  * Merge rules:
  * - Records are deduplicated by real name (`ชื่อ-นามสกุล` / `ชื่อจริง`), ignoring
  *   title prefixes (ดร./นาย/นาง/นางสาว) and whitespace differences.
  * - When the same person appears in multiple tables, scalar fields (nickname,
  *   fullName, position, companyName, classYear) are taken from the
- *   highest-priority table they appear in: Champ9 > Champ8 > Champ7 > Champ6.
+ *   highest-priority table they appear in:
+ *   Champ9 > Champ8 > Champ7 > Champ6 > Champ5 > ... > Champ1.
+ *   So the Airtable (Champ6-9) values always win over anything in the sheet,
+ *   and nothing in mentors 01..76 was overwritten by ChAMP 1-5 data — only
+ *   their `mentorYears` gained the earlier years.
  * - `department` and `industries` are person attributes that do not change
  *   year to year, so they fall back through Champ9 -> Champ8 -> Champ7 ->
  *   Champ6 (Champ7 has neither field in its schema) even when a
@@ -69,8 +97,10 @@ export type Mentor = {
  * - IDs are stable across re-merges: mentor-01..71 are pinned to the same
  *   people as the original Champ9/Champ7/Champ6 merge (so previously
  *   downloaded photo filenames keep matching); mentor-72..76 are the 5
- *   mentors that only appear in Champ8.
- * - `mentorPictureUrl` points at `/mentors/{id}.{ext}` for every mentor. The
+ *   mentors that only appear in Champ8; mentor-77..127 are the ChAMP 1-5
+ *   only mentors, appended in descending `#years` order.
+ * - `mentorPictureUrl` points at `/mentors/{id}.{ext}` for mentors 01..76 and
+ *   is absent for 77..127. The
  *   actual image files are NOT bundled here — Airtable serves attachments via
  *   short-lived signed URLs that this environment's network sandbox can't
  *   reach directly, so run `node scripts/download-mentor-photos.mjs` once
@@ -202,7 +232,7 @@ export const mentors: Mentor[] = [
     position: "CEO & Co-founder",
     companyName: "MuvMi (Urban Mobility Tech Co. Ltd.)",
     industries: ["tech-and-innovation", "entrepreneur-and-start-up"],
-    mentorYears: [9],
+    mentorYears: [4, 9],
   },
   {
     id: "mentor-11",
@@ -298,7 +328,7 @@ export const mentors: Mentor[] = [
     position: "Head of Innovation",
     companyName: "Learn Corporation",
     industries: ["tech-and-innovation"],
-    mentorYears: [8, 9],
+    mentorYears: [3, 4, 5, 8, 9],
   },
   {
     id: "mentor-19",
@@ -418,7 +448,7 @@ export const mentors: Mentor[] = [
     position: "Chief People Officer",
     companyName: "Central Pattana (CPN)",
     industries: ["commercial-and-marketing"],
-    mentorYears: [6, 7],
+    mentorYears: [5, 6, 7],
   },
   {
     id: "mentor-29",
@@ -442,7 +472,7 @@ export const mentors: Mentor[] = [
     position: "Head of Personal Care Sector",
     companyName: "Google Thailand",
     industries: ["tech-and-innovation"],
-    mentorYears: [6, 7],
+    mentorYears: [5, 6, 7],
   },
   {
     id: "mentor-31",
@@ -502,7 +532,7 @@ export const mentors: Mentor[] = [
     position: "Executive Officer",
     companyName: "Gulf Energy Development",
     industries: ["engineering"],
-    mentorYears: [7],
+    mentorYears: [1, 2, 4, 5, 7],
   },
   {
     id: "mentor-36",
@@ -562,7 +592,7 @@ export const mentors: Mentor[] = [
     position: "Chief Business Officer",
     companyName: "บริษัท ริพเพิลส์คอมเมิร์ซ จำกัด",
     industries: ["commercial-and-marketing"],
-    mentorYears: [6, 7],
+    mentorYears: [5, 6, 7],
   },
   {
     id: "mentor-41",
@@ -634,7 +664,7 @@ export const mentors: Mentor[] = [
     position: "CEO",
     companyName: "SCB10X",
     industries: ["financial-and-investment"],
-    mentorYears: [6, 7, 8],
+    mentorYears: [1, 2, 6, 7, 8],
   },
   {
     id: "mentor-47",
@@ -706,7 +736,7 @@ export const mentors: Mentor[] = [
     position: "Chief Technology Officer",
     companyName: "Clerverse",
     industries: ["tech-and-innovation"],
-    mentorYears: [6],
+    mentorYears: [2, 3, 5, 6],
   },
   {
     id: "mentor-53",
@@ -718,7 +748,7 @@ export const mentors: Mentor[] = [
     position: "Chief Operating Officer",
     companyName: "Mercular",
     industries: ["commercial-and-marketing"],
-    mentorYears: [6],
+    mentorYears: [2, 3, 4, 5, 6],
   },
   {
     id: "mentor-54",
@@ -730,7 +760,7 @@ export const mentors: Mentor[] = [
     position: "Founder & CEO",
     companyName: "Saturday School Foundation",
     industries: ["entrepreneur-and-start-up"],
-    mentorYears: [6],
+    mentorYears: [4, 5, 6],
   },
   {
     id: "mentor-55",
@@ -742,7 +772,7 @@ export const mentors: Mentor[] = [
     position: "Head of Distribution Sales",
     companyName: "Amundi Asset Management",
     industries: ["commercial-and-marketing", "financial-and-investment"],
-    mentorYears: [6],
+    mentorYears: [1, 2, 3, 4, 5, 6],
   },
   {
     id: "mentor-56",
@@ -766,7 +796,7 @@ export const mentors: Mentor[] = [
     position: "Regional Industrial Engineering manager - Asia",
     companyName: "Mars Petcare",
     industries: ["engineering", "manufacturing", "food-and-beverage"],
-    mentorYears: [6],
+    mentorYears: [2, 3, 4, 6],
   },
   {
     id: "mentor-58",
@@ -778,7 +808,7 @@ export const mentors: Mentor[] = [
     position: "CEO",
     companyName: "MFEC (Public company Limited)",
     industries: ["tech-and-innovation"],
-    mentorYears: [6],
+    mentorYears: [1, 2, 3, 4, 5, 6],
   },
   {
     id: "mentor-59",
@@ -790,7 +820,7 @@ export const mentors: Mentor[] = [
     position: "President",
     companyName: "Huawei Technologies Thailand",
     industries: ["tech-and-innovation", "engineering"],
-    mentorYears: [6],
+    mentorYears: [1, 2, 6],
   },
   {
     id: "mentor-60",
@@ -802,7 +832,7 @@ export const mentors: Mentor[] = [
     position: "กรรมการผู้จัดการ",
     companyName: "บริษัท อัลเท็มเทค จำกัด",
     industries: ["engineering"],
-    mentorYears: [6],
+    mentorYears: [2, 3, 4, 5, 6],
   },
   {
     id: "mentor-61",
@@ -814,7 +844,7 @@ export const mentors: Mentor[] = [
     position: "หัวหน้าทีมธุรกิจยานยนต์ไฟฟ้า",
     companyName: "การไฟฟ้าฝ่ายผลิตแห่งประเทศไทย",
     industries: ["engineering"],
-    mentorYears: [6],
+    mentorYears: [4, 5, 6],
   },
   {
     id: "mentor-62",
@@ -862,7 +892,7 @@ export const mentors: Mentor[] = [
     position: "Business Development Director",
     companyName: "Sertis",
     industries: ["tech-and-innovation"],
-    mentorYears: [6],
+    mentorYears: [3, 4, 5, 6],
   },
   {
     id: "mentor-66",
@@ -874,7 +904,7 @@ export const mentors: Mentor[] = [
     position: "Client Partner",
     companyName: "Meta Thailand",
     industries: ["tech-and-innovation", "commercial-and-marketing"],
-    mentorYears: [6],
+    mentorYears: [4, 5, 6],
   },
   {
     id: "mentor-67",
@@ -910,7 +940,7 @@ export const mentors: Mentor[] = [
     position: "Principal - Digital Banking & Head of Juristic Omnichannel",
     companyName: "SCB",
     industries: ["tech-and-innovation", "financial-and-investment"],
-    mentorYears: [6],
+    mentorYears: [3, 4, 5, 6],
   },
   {
     id: "mentor-70",
@@ -922,7 +952,7 @@ export const mentors: Mentor[] = [
     position: "Managing Director",
     companyName: "Willis Towers Watson",
     industries: ["financial-and-investment"],
-    mentorYears: [6],
+    mentorYears: [3, 4, 5, 6],
   },
   {
     id: "mentor-71",
@@ -934,7 +964,7 @@ export const mentors: Mentor[] = [
     position: "Regional Director",
     companyName: "SnapLogic",
     industries: ["tech-and-innovation"],
-    mentorYears: [6],
+    mentorYears: [4, 5, 6],
   },
   {
     id: "mentor-72",
@@ -946,7 +976,7 @@ export const mentors: Mentor[] = [
     position: "Chairman of True Digital Group and Board of Director of True Corp, Ascend Money, True IDC",
     companyName: "True Corporation (public) Company Limited",
     industries: ["tech-and-innovation"],
-    mentorYears: [8],
+    mentorYears: [2, 5, 8],
   },
   {
     id: "mentor-73",
@@ -958,7 +988,7 @@ export const mentors: Mentor[] = [
     position: "Supervisor Board, ROC Spicer Ltd. Taiwan, Plant Manager, Dana Spicer (Thailand)",
     companyName: "Dana Spicer",
     industries: ["engineering"],
-    mentorYears: [8],
+    mentorYears: [1, 2, 3, 4, 8],
   },
   {
     id: "mentor-74",
@@ -970,7 +1000,7 @@ export const mentors: Mentor[] = [
     position: "Founder",
     companyName: "HG Robotics Co., Ltd.",
     industries: ["entrepreneur-and-start-up"],
-    mentorYears: [8],
+    mentorYears: [1, 2, 8],
   },
   {
     id: "mentor-75",
@@ -995,6 +1025,580 @@ export const mentors: Mentor[] = [
     companyName: "Solar D Corporation Co., Ltd.",
     industries: ["engineering", "entrepreneur-and-start-up"],
     mentorYears: [8],
+  },
+
+  // ---------------------------------------------------------------------------
+  // mentor-77..127 — ChAMP 1-5 only, from the "ChAMP Eng mentor" Google Sheet.
+  // No photo and no company logo exist for anyone below. `department` and
+  // `classYear` are present only where a ChAMP year tab recorded them; see the
+  // "ChAMP 1-5 caveats" note at the top of this file.
+  // ---------------------------------------------------------------------------
+  {
+    id: "mentor-77",
+    nickname: "พี่ก้อง",
+    fullName: "พณชิต กิตติปัญญางาม",
+    department: "EE",
+    classYear: 78,
+    position: "CEO",
+    companyName: "AccRevo",
+    industries: ["tech-and-innovation", "entrepreneur-and-start-up"],
+    mentorYears: [1, 2, 3, 4, 5],
+  },
+  {
+    id: "mentor-78",
+    nickname: "พี่ก๊วย",
+    fullName: "ไพโรจน์ กวียานันท์",
+    department: "PETRO",
+    classYear: 68,
+    position: "Retired executive",
+    companyName: "Chevron Thailand Exploration and Production Ltd.",
+    industries: ["engineering"],
+    mentorYears: [1, 2, 3, 4, 5],
+  },
+  {
+    id: "mentor-79",
+    nickname: "พี่ต้า",
+    fullName: "ดร. วิโรจน์ จิรพัฒนกุล",
+    department: "CP",
+    classYear: 87,
+    position: "กรรมการผู้จัดการ",
+    companyName: "บริษัท สคูลดิโอ จำกัด",
+    industries: ["tech-and-innovation", "entrepreneur-and-start-up"],
+    mentorYears: [1, 2, 3, 4, 5],
+  },
+  {
+    id: "mentor-80",
+    nickname: "พี่วิน",
+    fullName: "วิธวินท์ อิทธิภาณุวัต",
+    department: "CP",
+    classYear: 90,
+    position: "Executive Director",
+    companyName: "Vertex Ventures",
+    industries: ["financial-and-investment", "entrepreneur-and-start-up"],
+    mentorYears: [1, 2, 3, 4],
+  },
+  {
+    id: "mentor-81",
+    nickname: "พี่โบ้",
+    fullName: "พิเชษฐ สิทธิอำนวย",
+    department: "IE",
+    classYear: 67,
+    position: "กรรมการผู้อำนวยการ",
+    companyName: "บริษัท หลักทรัพย์ บัวหลวง จำกัด (มหาชน)",
+    industries: ["financial-and-investment"],
+    mentorYears: [1, 2, 3, 4],
+  },
+  {
+    id: "mentor-82",
+    nickname: "พี่เส",
+    fullName: "เสนธิป ศรีไพพรรณ",
+    department: "IE",
+    classYear: 72,
+    position: "Chief Commercial Banking Officer",
+    companyName: "TMB Thanachart Bank",
+    industries: ["financial-and-investment"],
+    mentorYears: [1, 2, 3, 4],
+  },
+  {
+    id: "mentor-83",
+    nickname: "พี่ต้น",
+    fullName: "วงศกร ชัยวนนท์",
+    department: "EE",
+    classYear: 87,
+    position: "Executive Vice President, Data Analytics",
+    companyName: "SCB",
+    industries: ["tech-and-innovation", "financial-and-investment"],
+    mentorYears: [1, 2, 3, 5],
+  },
+  {
+    id: "mentor-84",
+    nickname: "พี่ต้อง",
+    fullName: "สโรชินี ปวีณวัฒน์",
+    department: "CP",
+    classYear: 83,
+    position: "Assistant Managing Director",
+    companyName: "Dplus Intertrade co., ltd.",
+    industries: ["commercial-and-marketing"],
+    mentorYears: [1, 2, 3],
+  },
+  {
+    id: "mentor-85",
+    nickname: "พี่โอม",
+    fullName: "อัฐพงศ์ รัตนวีระชานน",
+    department: "CP",
+    classYear: 91,
+    position: "Head Coder",
+    companyName: "Finnomena",
+    industries: ["tech-and-innovation", "financial-and-investment"],
+    mentorYears: [1, 2, 3],
+  },
+  {
+    id: "mentor-86",
+    nickname: "พี่ประทิต",
+    fullName: "ประทิต โลหะธีรภาพ",
+    department: "CHEM",
+    classYear: 71,
+    position: "Vice President",
+    companyName: "PTT Global Chemical Plc.",
+    industries: ["engineering", "manufacturing"],
+    mentorYears: [1, 2, 3],
+  },
+  {
+    id: "mentor-87",
+    nickname: "พี่โหน่ง",
+    fullName: "พิสิฐ ยิ่งมโนกิจ",
+    department: "CIVIL",
+    classYear: 78,
+    position: "Executive Director, Co-founder",
+    companyName: "InGen Design",
+    industries: ["engineering", "entrepreneur-and-start-up"],
+    mentorYears: [1, 2, 3],
+  },
+  {
+    id: "mentor-88",
+    nickname: "พี่ฟอง",
+    fullName: "อรรถสิทธิ์ พานิชย์ไพศาลกูล",
+    department: "CHEM",
+    classYear: 87,
+    position: "ผู้จัดการส่วนการลงทุนต่างประเทศ",
+    companyName: "PTT Global Chemical Plc.",
+    industries: ["financial-and-investment"],
+    mentorYears: [1, 2, 3],
+  },
+  {
+    id: "mentor-89",
+    nickname: "พี่ชาญ",
+    fullName: "ดร.พลภัทร์ อุดมผล",
+    department: "EE",
+    classYear: 78,
+    position: "ผู้ร่วมก่อตั้ง และผู้อำนวยการฝ่ายพัฒนาธุรกิจ",
+    companyName: "บริษัท อุ๊คบี จำกัด",
+    industries: ["tech-and-innovation", "entrepreneur-and-start-up"],
+    mentorYears: [1, 2],
+  },
+  {
+    id: "mentor-90",
+    nickname: "พี่ทริป",
+    fullName: "รศ.ดร. ชัชชาติ สิทธิพันธุ์",
+    department: "CIVIL",
+    classYear: 67,
+    position: "ประธานเจ้าหน้าที่บริหาร และกรรมการผู้จัดการ",
+    companyName: "บริษัท ควอลิตีเฮาส์ จำกัด (มหาชน)",
+    industries: ["engineering"],
+    mentorYears: [1, 2],
+  },
+  {
+    id: "mentor-91",
+    nickname: "พี่ก้อง",
+    fullName: "ก้องกิติ ลิ่วเจริญชัย",
+    department: "ME",
+    classYear: 87,
+    position: "Assistant Business Venturing Manager",
+    companyName: "SCG",
+    industries: ["manufacturing", "entrepreneur-and-start-up"],
+    mentorYears: [1, 2],
+  },
+  {
+    id: "mentor-92",
+    nickname: "พี่เล็ก",
+    fullName: "รุ่งโรจน์ ตันเจริญ",
+    department: "IE",
+    classYear: 90,
+    position: "กรรมการผู้จัดการ",
+    companyName: "Rabbit Group",
+    industries: ["commercial-and-marketing"],
+    mentorYears: [1, 2],
+  },
+  {
+    id: "mentor-93",
+    nickname: "พี่ที",
+    fullName: "ไพที สกุลเอี่ยมไพบูลย์",
+    department: "IE",
+    classYear: 79,
+    position: "รองกรรมการผู้จัดการสายงานโลจิสติกส์",
+    companyName: "บุญถาวร เซรามิค",
+    industries: ["manufacturing", "commercial-and-marketing"],
+    mentorYears: [1, 2],
+  },
+  {
+    id: "mentor-94",
+    nickname: "พี่โบ๊ท",
+    fullName: "ไผท ผดุงถิ่น",
+    department: "CIVIL",
+    classYear: 80,
+    position: "ผู้ก่อตั้ง และกรรมการผู้จัดการ",
+    companyName: "บริษัท บิลค์ เอเชีย จำกัด",
+    industries: ["tech-and-innovation", "entrepreneur-and-start-up"],
+    mentorYears: [1, 2],
+  },
+  {
+    id: "mentor-95",
+    nickname: "พี่ศา",
+    fullName: "ศานนท์ หวังสร้างบุญ",
+    department: "IE",
+    classYear: 91,
+    position: "Owner",
+    companyName: "Once again Hostel",
+    industries: ["entrepreneur-and-start-up"],
+    mentorYears: [1, 2],
+  },
+  {
+    id: "mentor-96",
+    nickname: "พี่หลุยส์",
+    fullName: "อัมรินทร์ สิมะโรจน์",
+    department: "EE",
+    classYear: 78,
+    position: "รองกรรมการผู้จัดการสายงานบริหาร",
+    companyName: "Susco",
+    industries: ["engineering"],
+    mentorYears: [1, 4],
+  },
+  {
+    id: "mentor-97",
+    nickname: "พี่ชาญยุทธ",
+    fullName: "ชาญยุทธ ฉายาวัฒนะ",
+    department: "ME",
+    classYear: 64,
+    position: "Deputy CEO",
+    companyName: "Energy Solution Management",
+    industries: ["engineering"],
+    mentorYears: [1],
+  },
+  {
+    id: "mentor-98",
+    nickname: "พี่ยอด",
+    fullName: "ยอด ชินสุภัคกุล",
+    department: "CP",
+    classYear: 84,
+    position: "กรรมการผู้จัดการ",
+    companyName: "Wongnai",
+    industries: [
+      "tech-and-innovation",
+      "entrepreneur-and-start-up",
+      "food-and-beverage",
+    ],
+    mentorYears: [1],
+  },
+  {
+    id: "mentor-99",
+    nickname: "พี่แมน",
+    fullName: "วีรทศ สิมะพิชัยเชษฐ",
+    department: "IE",
+    classYear: 79,
+    position: "กรรมการผู้จัดการ",
+    companyName: "UBS",
+    industries: ["financial-and-investment"],
+    mentorYears: [1],
+  },
+  {
+    id: "mentor-100",
+    nickname: "พี่โอม",
+    fullName: "วรวิทย์ ชื่นชีพ",
+    department: "CHEM",
+    classYear: 88,
+    position: "Senior Technical Support Engineer",
+    companyName: "PTTGC",
+    industries: ["engineering", "manufacturing"],
+    mentorYears: [1],
+  },
+  {
+    id: "mentor-101",
+    nickname: "พี่เทิดศักดิ์",
+    fullName: "เทิดศักดิ์ ฤกษ์ประเสริฐกุล",
+    department: "CHEM",
+    classYear: 82,
+    position: "Division Manager",
+    companyName: "PTT Global Chemical Plc.",
+    industries: ["engineering", "manufacturing"],
+    mentorYears: [1],
+  },
+  {
+    id: "mentor-102",
+    nickname: "พี่นาถ",
+    fullName: "ศิรินาถ ตั้งรวมทรัพย์",
+    department: "CP",
+    classYear: 86,
+    position: "Data Scientist",
+    companyName: "Agoda",
+    industries: ["tech-and-innovation"],
+    mentorYears: [1],
+  },
+  {
+    id: "mentor-103",
+    nickname: "พี่สมคิด",
+    fullName: "สมคิด จิรานันตรัตน์",
+    department: "CP",
+    classYear: 65,
+    position: "ประธาน",
+    companyName: "Kasikorn Business-Technology Group",
+    industries: ["tech-and-innovation", "financial-and-investment"],
+    mentorYears: [1],
+  },
+  {
+    id: "mentor-104",
+    nickname: "พี่ธนญ",
+    fullName: "ธนญ ตันติสุนทร",
+    department: "ENVI",
+    classYear: 74,
+    position: "ผู้ช่วยกรรมการผู้จัดการใหญ่ กลุ่มงานองค์กรสัมพันธ์",
+    companyName: "บริษัท กัลฟ์ เอ็นเนอร์จี ดีเวลลอปเมนท์ จำกัด (มหาชน)",
+    industries: ["engineering"],
+    mentorYears: [1],
+  },
+  {
+    id: "mentor-105",
+    nickname: "พี่บุริศวร์",
+    fullName: "บุริศวร์ กิตติรังสิ",
+    department: "AE",
+    classYear: 80,
+    position: "Vice President - Head of Digital Lending Analytics",
+    companyName: "KBank",
+    industries: ["tech-and-innovation", "financial-and-investment"],
+    mentorYears: [1],
+  },
+  {
+    id: "mentor-106",
+    nickname: "พี่แบงก์",
+    fullName: "ฐิติพงศ์ รัตนหิรัญญา",
+    department: "CHEM",
+    classYear: 86,
+    position: "Asia Process Development Manager",
+    companyName: "Mars Petcare",
+    industries: ["manufacturing", "food-and-beverage"],
+    mentorYears: [2, 3, 4, 5],
+  },
+  {
+    id: "mentor-107",
+    nickname: "พี่โน",
+    fullName: "อโณทัย อดุลพันธุ์",
+    department: "IE",
+    classYear: 73,
+    position: "Managing Partner",
+    companyName: "Lakeshore Capital Partners",
+    industries: ["financial-and-investment"],
+    mentorYears: [2, 3, 4, 5],
+  },
+  {
+    id: "mentor-108",
+    nickname: "พี่โบ๊ท",
+    fullName: "ภัทรวิน จงวิศาล",
+    department: "NAVAL",
+    classYear: 84,
+    position: "ประธานเจ้าหน้าที่บริหาร",
+    companyName: "บริษัท มาร์ซัน จำกัด (มหาชน)",
+    industries: ["engineering", "manufacturing"],
+    mentorYears: [2, 3, 5],
+  },
+  {
+    id: "mentor-109",
+    nickname: "พี่ไมเคิล",
+    fullName: "อธิวรรธน์ วงศ์ไวศยวรรณ",
+    department: "IE",
+    classYear: 79,
+    position:
+      "Director (CEO Office) and Sustainable Development Committee",
+    companyName: "CJ Express Group",
+    industries: ["commercial-and-marketing"],
+    mentorYears: [2, 3, 5],
+  },
+  {
+    id: "mentor-110",
+    nickname: "พี่เอ้",
+    fullName: "ศรัณย์ ผโลประการ",
+    department: "EE",
+    position: "Head of Fixed Broadband",
+    companyName: "AIS",
+    industries: ["tech-and-innovation"],
+    mentorYears: [2],
+  },
+  {
+    id: "mentor-111",
+    nickname: "พี่ใหม่",
+    fullName: "ปริมล กาญจนจารี",
+    department: "CP",
+    // Conflict: ChAMP 3 tab says Intania 80, ChAMP 4 + 5 tabs say 78.
+    // Later year wins, per the merge rules above.
+    classYear: 78,
+    position: "Partner",
+    companyName: "McKinsey & Company",
+    industries: ["commercial-and-marketing", "financial-and-investment"],
+    mentorYears: [3, 4, 5],
+  },
+  {
+    id: "mentor-112",
+    nickname: "พี่เก่ง",
+    fullName: "ดร.ธิติ วัชรสินธพชัย",
+    department: "CIVIL",
+    classYear: 78,
+    position: "SVP",
+    companyName: "Team Group",
+    industries: ["engineering", "tech-and-innovation"],
+    mentorYears: [3, 4, 5],
+  },
+  {
+    id: "mentor-113",
+    nickname: "พี่ตั้ม",
+    fullName: "สันติ ศรีวิชาญกุล",
+    department: "ME",
+    classYear: 77,
+    position: "กรรมการผู้จัดการใหญ่",
+    companyName: "บริษัท ซี.ไอ.ที. จำกัด (KUDOS)",
+    industries: ["manufacturing", "commercial-and-marketing"],
+    mentorYears: [3, 4, 5],
+  },
+  {
+    id: "mentor-114",
+    nickname: "พี่เหมย",
+    fullName: "ศิรินทร์ เจ้าพิทักษ์วงศ์",
+    department: "ME",
+    classYear: 84,
+    position: "ผู้ช่วยผู้จัดการทั่วไป",
+    companyName: "บริษัท ซิตี้ไลอ้อนสตีม จำกัด",
+    industries: ["engineering", "manufacturing"],
+    mentorYears: [3, 4],
+  },
+  {
+    id: "mentor-115",
+    nickname: "พี่เห่า",
+    fullName: "ดร.วิบูลย์ อรุณธเนศ",
+    department: "CP",
+    classYear: 63,
+    position: "Chief Executive Officer",
+    companyName: "CCM Spirit Co., Ltd",
+    industries: ["food-and-beverage"],
+    mentorYears: [3, 4],
+  },
+  {
+    id: "mentor-116",
+    nickname: "พี่ต้อง",
+    fullName: "อโณทัย รัตนกุล",
+    department: "EE",
+    classYear: 73,
+    position: "รองหัวหน้าคณะผู้บริหารด้านการบริการลูกค้า",
+    companyName: "บริษัท ทรู คอเปอเรชั่น จำกัด (มหาชน)",
+    industries: ["tech-and-innovation", "commercial-and-marketing"],
+    mentorYears: [3, 4],
+  },
+  {
+    id: "mentor-117",
+    nickname: "พี่หยก",
+    fullName: "บุญญพร ฤทธิเดช",
+    department: "ME",
+    classYear: 84,
+    position: "Managing Director",
+    companyName: "Soecon Engineering Co,m Ltd.",
+    industries: ["engineering", "manufacturing"],
+    mentorYears: [3],
+  },
+  {
+    id: "mentor-118",
+    nickname: "พี่ถิ",
+    fullName: "ถิรพันธุ์ สรรพกิจ",
+    department: "CP",
+    classYear: 73,
+    position: "รองผู้จัดการ สายงานเทคโนโลยีสารสนเทศ",
+    companyName: "SET",
+    industries: ["tech-and-innovation", "financial-and-investment"],
+    mentorYears: [3],
+  },
+  {
+    id: "mentor-119",
+    nickname: "พี่รุจ",
+    fullName: "ดร. รุจ ณ สงขลา",
+    department: "ME",
+    classYear: 73,
+    position: "กรรมการผู้จัดการ",
+    companyName: "บริษัท เอสอาร์ แอดวานซ์อินดัสตรีส์ จำกัด",
+    industries: ["engineering", "manufacturing"],
+    mentorYears: [3],
+  },
+  {
+    id: "mentor-120",
+    nickname: "พี่โอห์ม",
+    fullName: "กิตติชัย จิรสุขานนท์",
+    department: "CP",
+    classYear: 78,
+    position: "Managing Director / CEO",
+    companyName: "Cleverse Co Ltd",
+    industries: ["tech-and-innovation", "entrepreneur-and-start-up"],
+    mentorYears: [4, 5],
+  },
+  {
+    id: "mentor-121",
+    nickname: "พี่โบ๊ท",
+    fullName: "พชร อารยะการกุล",
+    department: "CP",
+    classYear: 89,
+    position: "ประธานเจ้าหน้าที่บริหาร",
+    companyName: "บลูบิค กรุ๊ป จำกัด (มหาชน)",
+    industries: ["tech-and-innovation", "commercial-and-marketing"],
+    mentorYears: [4, 5],
+  },
+  {
+    id: "mentor-122",
+    nickname: "พี่เต๋อ",
+    fullName: "สาธร อุพันวัน",
+    department: "IE",
+    classYear: 78,
+    position: "CEO",
+    companyName: "Learn Corporation Co,Ltd",
+    industries: ["tech-and-innovation"],
+    mentorYears: [4, 5],
+  },
+  {
+    id: "mentor-123",
+    nickname: "พี่ต๋อม",
+    fullName: "วิศรุต ศรีโรจนกุล",
+    department: "CHEM",
+    classYear: 81,
+    position: "Deputy CFO",
+    companyName: "บริษัท วินเวสต์เม้นท์ จำกัด",
+    industries: ["financial-and-investment"],
+    mentorYears: [4, 5],
+  },
+  {
+    id: "mentor-124",
+    nickname: "พี่หนึ่ง",
+    fullName: "ถิรนันท์ อรุณวัฒนกูล",
+    department: "IE",
+    classYear: 88,
+    position: "COO",
+    companyName: "MONIX",
+    industries: ["tech-and-innovation", "financial-and-investment"],
+    mentorYears: [4, 5],
+  },
+  {
+    id: "mentor-125",
+    nickname: "พี่กบ",
+    fullName: "จรัล งามวิโรจน์เจริญ",
+    department: "EE",
+    classYear: 74,
+    position: "Director (CEO Office)",
+    companyName: "Carabao Group",
+    industries: ["tech-and-innovation", "food-and-beverage"],
+    mentorYears: [4],
+  },
+  {
+    id: "mentor-126",
+    nickname: "พี่จิ๊ก",
+    fullName: "ชยงค์ บริสุทธิ์สวัสดิ์",
+    department: "PETRO",
+    classYear: 69,
+    position: "รองกรรมการผู้จัดการใหญ่",
+    companyName: "ปตท สำรวจและผลิตปิโตรเลียม",
+    industries: ["engineering"],
+    mentorYears: [5],
+  },
+  {
+    id: "mentor-127",
+    nickname: "พี่นก",
+    fullName: "มณีรัตน์ อนุโลมสมบัติ",
+    department: "IE",
+    classYear: 80,
+    position: "CEO",
+    companyName: "Sea Thailand",
+    industries: ["tech-and-innovation", "commercial-and-marketing"],
+    mentorYears: [5],
   },
 ];
 

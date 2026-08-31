@@ -18,28 +18,32 @@ export function MentorCard({ mentor }: MentorCardProps): React.JSX.Element {
   const hasCompanyLogo = Boolean(mentor.companyLogoUrl);
   const focus = mentorPictureFocus[mentor.id] ?? defaultMentorPictureFocus;
   const zoom = focus.zoom ?? 1;
+  /** ChAMP 1-5 mentors came from a spreadsheet with no photo or major/Intania. */
+  const hasCredentials = Boolean(mentor.department ?? mentor.classYear);
 
   return (
     <article
       className={`flex w-full flex-col overflow-hidden rounded-lg ${cardBackground} p-1 shadow-[0_6px_16px_rgb(0_0_0_/_18%)] transition-transform hover:-translate-y-0.5`}
     >
       <div className="relative aspect-square w-full overflow-hidden rounded bg-[#D9D9D9]">
-        <Image
-          alt={`${mentor.nickname} — ${mentor.fullName}`}
-          className="object-cover"
-          fill
-          sizes="(max-width: 640px) 50vw, 360px"
-          src={mentor.mentorPictureUrl}
-          style={
-            zoom > 1
-              ? {
-                  objectPosition: focus.position,
-                  transform: `scale(${zoom})`,
-                  transformOrigin: focus.origin ?? focus.position,
-                }
-              : { objectPosition: focus.position }
-          }
-        />
+        {mentor.mentorPictureUrl ? (
+          <Image
+            alt={`${mentor.nickname} — ${mentor.fullName}`}
+            className="object-cover"
+            fill
+            sizes="(max-width: 640px) 50vw, 360px"
+            src={mentor.mentorPictureUrl}
+            style={
+              zoom > 1
+                ? {
+                    objectPosition: focus.position,
+                    transform: `scale(${zoom})`,
+                    transformOrigin: focus.origin ?? focus.position,
+                  }
+                : { objectPosition: focus.position }
+            }
+          />
+        ) : null}
       </div>
 
       <div className="flex flex-1 flex-col items-center gap-1 px-1 pt-2 pb-1 text-center text-white">
@@ -48,12 +52,16 @@ export function MentorCard({ mentor }: MentorCardProps): React.JSX.Element {
         </p>
         <p className="text-[11px] leading-[1.2]">{mentor.fullName}</p>
 
-        <p className="flex flex-wrap items-center justify-center gap-1.5 text-[12px] leading-none font-bold">
-          <span className="rounded-lg bg-[#F6DC81] px-2 py-0.5 text-[#65090C]">
-            {mentor.department}
-          </span>
-          <span>Intania {mentor.classYear}</span>
-        </p>
+        {hasCredentials ? (
+          <p className="flex flex-wrap items-center justify-center gap-1.5 text-[12px] leading-none font-bold">
+            {mentor.department ? (
+              <span className="rounded-lg bg-[#F6DC81] px-2 py-0.5 text-[#65090C]">
+                {mentor.department}
+              </span>
+            ) : null}
+            {mentor.classYear ? <span>Intania {mentor.classYear}</span> : null}
+          </p>
+        ) : null}
 
         <p className="mt-0.5 w-full rounded-lg border border-[#F6DC81] px-1.5 py-1 text-[10px] leading-[1.2] font-bold text-[#F6DC81]">
           {mentor.position}
