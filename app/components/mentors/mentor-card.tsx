@@ -19,14 +19,20 @@ export function MentorCard({ mentor }: MentorCardProps): React.JSX.Element {
   const focus = mentorPictureFocus[mentor.id] ?? defaultMentorPictureFocus;
   const zoom = focus.zoom ?? 1;
   /** ChAMP 1-5 mentors came from a spreadsheet with no photo or major/Intania. */
+  const hasPicture = Boolean(mentor.mentorPictureUrl);
   const hasCredentials = Boolean(mentor.department ?? mentor.classYear);
+  const companyNameClass = hasCompanyLogo
+    ? "text-left text-[10px]"
+    : hasPicture
+      ? "text-center text-[11.5px]"
+      : "text-center text-[12.5px]";
 
   return (
     <article
       className={`flex w-full flex-col overflow-hidden rounded-lg ${cardBackground} p-1 shadow-[0_6px_16px_rgb(0_0_0_/_18%)] transition-transform hover:-translate-y-0.5`}
     >
-      <div className="relative aspect-square w-full overflow-hidden rounded bg-[#D9D9D9]">
-        {mentor.mentorPictureUrl ? (
+      {mentor.mentorPictureUrl ? (
+        <div className="relative aspect-square w-full overflow-hidden rounded bg-[#D9D9D9]">
           <Image
             alt={`${mentor.nickname} — ${mentor.fullName}`}
             className="object-cover"
@@ -43,14 +49,22 @@ export function MentorCard({ mentor }: MentorCardProps): React.JSX.Element {
                 : { objectPosition: focus.position }
             }
           />
-        ) : null}
-      </div>
+        </div>
+      ) : null}
 
-      <div className="flex flex-1 flex-col items-center gap-1 px-1 pt-2 pb-1 text-center text-white">
-        <p className="text-[15px] leading-[1.15] font-bold">
+      <div
+        className={`flex flex-1 flex-col items-center gap-1 text-center text-white ${hasPicture ? "px-1 pt-2 pb-1" : "justify-center gap-1.5 px-2 py-5"}`}
+      >
+        <p
+          className={`leading-[1.15] font-bold ${hasPicture ? "text-[15px]" : "text-[19px]"}`}
+        >
           {mentor.nickname}
         </p>
-        <p className="text-[11px] leading-[1.2]">{mentor.fullName}</p>
+        <p
+          className={`leading-[1.2] ${hasPicture ? "text-[11px]" : "text-[12px]"}`}
+        >
+          {mentor.fullName}
+        </p>
 
         {hasCredentials ? (
           <p className="flex flex-wrap items-center justify-center gap-1.5 text-[12px] leading-none font-bold">
@@ -63,12 +77,14 @@ export function MentorCard({ mentor }: MentorCardProps): React.JSX.Element {
           </p>
         ) : null}
 
-        <p className="mt-0.5 w-full rounded-lg border border-[#F6DC81] px-1.5 py-1 text-[10px] leading-[1.2] font-bold text-[#F6DC81]">
+        <p
+          className={`mt-0.5 w-full rounded-lg border border-[#F6DC81] px-1.5 py-1 leading-[1.2] font-bold text-[#F6DC81] ${hasPicture ? "text-[10px]" : "text-[11px]"}`}
+        >
           {mentor.position}
         </p>
 
         <div
-          className={`mt-auto flex w-full items-center gap-1.5 pt-2 ${hasCompanyLogo ? "" : "justify-center"}`}
+          className={`flex w-full items-center gap-1.5 pt-2 ${hasPicture ? "mt-auto" : ""} ${hasCompanyLogo ? "" : "justify-center"}`}
         >
           {mentor.companyLogoUrl ? (
             <span className="relative h-7 w-[42%] shrink-0 overflow-hidden rounded bg-white">
@@ -82,7 +98,7 @@ export function MentorCard({ mentor }: MentorCardProps): React.JSX.Element {
             </span>
           ) : null}
           <p
-            className={`leading-[1.3] font-semibold ${hasCompanyLogo ? "text-left text-[10px]" : "text-center text-[11.5px]"}`}
+            className={`leading-[1.3] font-semibold ${companyNameClass}`}
           >
             {mentor.companyName}
           </p>

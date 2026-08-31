@@ -98,7 +98,8 @@ export type Mentor = {
  *   people as the original Champ9/Champ7/Champ6 merge (so previously
  *   downloaded photo filenames keep matching); mentor-72..76 are the 5
  *   mentors that only appear in Champ8; mentor-77..127 are the ChAMP 1-5
- *   only mentors, appended in descending `#years` order.
+ *   only mentors, appended in descending `#years` order; mentor-128..135 are
+ *   the 8 first-time mentors added to the Champ9 table after that first merge.
  * - `mentorPictureUrl` points at `/mentors/{id}.{ext}` for mentors 01..76 and
  *   is absent for 77..127. The
  *   actual image files are NOT bundled here — Airtable serves attachments via
@@ -106,8 +107,10 @@ export type Mentor = {
  *   reach directly, so run `node scripts/download-mentor-photos.mjs` once
  *   (soon — those signed URLs expire a few hours after being fetched) to pull
  *   every photo into `public/mentors/` at these exact filenames.
- * - `companyLogoUrl` is left unset for every mentor (no logo assets pulled in
- *   this pass).
+ * - `companyLogoUrl` is left unset for every mentor. The Champ9 Airtable table
+ *   does carry a Logo attachment for all 35 of its rows, so a logo pass is
+ *   possible for the current year — it was skipped here to avoid 35 cards
+ *   with logos and 100 without.
  * - `industries` is best-effort, keyword-matched from each table's free-text
  *   industry field (plus role/company as a fallback signal). Treat these as a
  *   useful first pass, not a verified taxonomy — some entries may be missing
@@ -1599,6 +1602,112 @@ export const mentors: Mentor[] = [
     companyName: "Sea Thailand",
     industries: ["tech-and-innovation", "commercial-and-marketing"],
     mentorYears: [5],
+  },
+
+  // ---------------------------------------------------------------------------
+  // mentor-128..135 — first-time ChAMP 9 mentors, added after the Champ9
+  // Airtable table gained new rows. Photos come from that table's
+  // Profile_Picture attachments; run `node scripts/download-mentor-photos.mjs`
+  // to pull them into public/mentors/ (that script is scoped to these 8 only,
+  // so it will not overwrite the hand-picked images for mentor-01..71).
+  // Every one of them also has a company Logo attachment in Airtable that is
+  // not wired up here — see `companyLogoUrl` in the notes at the top.
+  // ---------------------------------------------------------------------------
+  {
+    id: "mentor-128",
+    mentorPictureUrl: "/mentors/mentor-128.png",
+    nickname: "พี่ไมค์",
+    fullName: "กานต์ โอภาสจำรัสกิจ",
+    department: "EE",
+    classYear: 80,
+    position: "Head of Security IC Product Line",
+    companyName: "Silicon Craft Technology PLC",
+    industries: ["tech-and-innovation", "manufacturing"],
+    mentorYears: [9],
+  },
+  {
+    id: "mentor-129",
+    mentorPictureUrl: "/mentors/mentor-129.png",
+    nickname: "พี่บอย",
+    fullName: "ภัทราวุธ ซื่อสัตยาศิลป์",
+    department: "CP",
+    classYear: 84,
+    position: "CTO",
+    companyName: "LINE MAN Wongnai",
+    industries: ["tech-and-innovation", "food-and-beverage"],
+    mentorYears: [9],
+  },
+  {
+    id: "mentor-130",
+    mentorPictureUrl: "/mentors/mentor-130.jpg",
+    nickname: "พี่นัน",
+    fullName: "นันท์ชนก เมฆมาสิน",
+    department: "CHEM",
+    classYear: 87,
+    position: "Associate Partner",
+    companyName: "Bain & Company",
+    industries: ["commercial-and-marketing"],
+    mentorYears: [9],
+  },
+  {
+    id: "mentor-131",
+    mentorPictureUrl: "/mentors/mentor-131.jpg",
+    nickname: "พี่แจ๊ค",
+    fullName: "รตนพล บุบผาชาติ",
+    department: "CP",
+    classYear: 84,
+    position: "Managing Director",
+    companyName: "Playtorium Solutions Public Company Limited",
+    industries: ["tech-and-innovation"],
+    mentorYears: [9],
+  },
+  {
+    id: "mentor-132",
+    mentorPictureUrl: "/mentors/mentor-132.jpg",
+    nickname: "พี่นัท",
+    fullName: "วนัชพร ณ เชียงใหม่",
+    department: "CHEM",
+    classYear: 87,
+    position: "Commercial Director",
+    companyName: "Bluebik",
+    industries: ["tech-and-innovation", "commercial-and-marketing"],
+    mentorYears: [9],
+  },
+  {
+    id: "mentor-133",
+    mentorPictureUrl: "/mentors/mentor-133.jpg",
+    nickname: "พี่ป๋วย",
+    fullName: "สาโรช คุณวุฒิพร",
+    department: "IE",
+    classYear: 94,
+    position: "Global Supply Chain Transformation Lead",
+    companyName: "Mars Petcare",
+    industries: ["manufacturing", "food-and-beverage"],
+    mentorYears: [9],
+  },
+  {
+    id: "mentor-134",
+    mentorPictureUrl: "/mentors/mentor-134.png",
+    nickname: "พี่เชาว์",
+    fullName: "เชาว์เลิศ ลีลาศวัฒนกุล",
+    department: "ME",
+    classYear: 85,
+    position: "Deputy Managing Director",
+    companyName: "Lucky Flame",
+    industries: ["manufacturing"],
+    mentorYears: [9],
+  },
+  {
+    id: "mentor-135",
+    mentorPictureUrl: "/mentors/mentor-135.jpg",
+    nickname: "พี่กิด",
+    fullName: "กฤษณ์ พรพิไลลักษณ์",
+    department: "AE",
+    classYear: 95,
+    position: "CEO",
+    companyName: "SolarPPM Company Limited",
+    industries: ["engineering"],
+    mentorYears: [9],
   },
 ];
 
