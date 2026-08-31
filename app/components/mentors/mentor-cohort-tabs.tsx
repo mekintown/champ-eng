@@ -13,7 +13,7 @@ export function MentorCohortTabs({
 }: MentorCohortTabsProps): React.JSX.Element {
   const cohorts: { id: MentorCohort; label: string }[] = [
     { id: "current", label: "This year's mentors" },
-    { id: "all", label: "All ex-mentors" },
+    { id: "all", label: "All mentors" },
   ];
 
   return (

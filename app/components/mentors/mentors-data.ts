@@ -1711,6 +1711,30 @@ export const mentors: Mentor[] = [
   },
 ];
 
+/** Highest program year a mentor served in: `[3, 4, 5, 8, 9]` -> `9`. */
+export function latestMentorYear(mentor: Mentor): number {
+  return mentor.mentorYears.reduce(
+    (latest, year) => (year > latest ? year : latest),
+    0,
+  );
+}
+
+/**
+ * Most recent mentors first — everyone still mentoring in ChAMP 9, then those
+ * whose last year was 8, and so on down to ChAMP 1. Mentors who share a latest
+ * year fall back to `id` ascending, compared numerically so that mentor-99
+ * sorts before mentor-100 rather than after it.
+ */
+export function sortMentorsByLatestYear(allMentors: Mentor[]): Mentor[] {
+  return [...allMentors].sort((a, b) => {
+    const byLatestYear = latestMentorYear(b) - latestMentorYear(a);
+
+    return byLatestYear !== 0
+      ? byLatestYear
+      : a.id.localeCompare(b.id, "en", { numeric: true });
+  });
+}
+
 export function filterMentors(
   allMentors: Mentor[],
   {

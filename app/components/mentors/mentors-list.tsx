@@ -10,6 +10,7 @@ import {
   currentProgramYear,
   filterMentors,
   mentors,
+  sortMentorsByLatestYear,
   type MentorIndustry,
 } from "./mentors-data";
 
@@ -23,14 +24,16 @@ export function MentorsList({ id }: MentorsListProps): React.JSX.Element {
     MentorIndustry[]
   >([]);
 
-  const visibleMentors = useMemo(
-    () =>
-      filterMentors(mentors, {
-        industries: selectedIndustries,
-        programYear: cohort === "current" ? currentProgramYear : null,
-      }),
-    [cohort, selectedIndustries],
-  );
+  const visibleMentors = useMemo(() => {
+    const matching = filterMentors(mentors, {
+      industries: selectedIndustries,
+      programYear: cohort === "current" ? currentProgramYear : null,
+    });
+
+    // The all-years view spans ChAMP 1-9, so lead with the most recent mentors.
+    // The current-year view is already a single cohort and keeps roster order.
+    return cohort === "all" ? sortMentorsByLatestYear(matching) : matching;
+  }, [cohort, selectedIndustries]);
 
   function toggleIndustry(industry: MentorIndustry): void {
     setSelectedIndustries((currentIndustries) =>
