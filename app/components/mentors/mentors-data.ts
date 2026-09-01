@@ -98,8 +98,9 @@ export type Mentor = {
  *   people as the original Champ9/Champ7/Champ6 merge (so previously
  *   downloaded photo filenames keep matching); mentor-72..76 are the 5
  *   mentors that only appear in Champ8; mentor-77..127 are the ChAMP 1-5
- *   only mentors, appended in descending `#years` order; mentor-128..135 are
- *   the 8 first-time mentors added to the Champ9 table after that first merge.
+ *   only mentors, appended in descending `#years` order; mentor-128..136 are
+ *   first-time mentors added to the Champ9 table after that first merge, in
+ *   the order they showed up there.
  * - `mentorPictureUrl` points at `/mentors/{id}.{ext}` for mentors 01..76 and
  *   is absent for 77..127. The
  *   actual image files are NOT bundled here — Airtable serves attachments via
@@ -115,6 +116,24 @@ export type Mentor = {
  *   industry field (plus role/company as a fallback signal). Treat these as a
  *   useful first pass, not a verified taxonomy — some entries may be missing
  *   a tag or carry an approximate one.
+ *
+ *   Two conventions cover sectors the taxonomy has no tag for, so keep new
+ *   entries consistent with them:
+ *   - Management/strategy consulting maps to `commercial-and-marketing`
+ *     (mentor-09 TNI, mentor-111 McKinsey, mentor-130 Bain).
+ *   - Energy, oil and gas map to `engineering` (mentor-78 Chevron,
+ *     mentor-97 Energy Solution, mentor-104 Gulf, mentor-126 PTTEP).
+ *
+ *   Tags are "company sector, plus what the person actually does", so two
+ *   mentors at one company share the sector tags and differ only where their
+ *   roles differ. PTTGC is engineering + manufacturing for everyone there,
+ *   and mentor-88 adds financial-and-investment for his investment role. Mars
+ *   Petcare is manufacturing + food-and-beverage for everyone, and mentor-57
+ *   and mentor-106 add engineering for their engineering roles while
+ *   mentor-133 (supply chain) does not.
+ *
+ *   Every mentor should carry at least one tag — an empty `industries` array
+ *   hides that person from every industry filter.
  */
 export const mentors: Mentor[] = [
   {
@@ -156,7 +175,7 @@ export const mentors: Mentor[] = [
   {
     id: "mentor-04",
     mentorPictureUrl: "/mentors/mentor-04.jpg",
-    nickname: "พี่เอิ๊บ หรือ เอิร์บ",
+    nickname: "พี่เอิร์บ",
     fullName: "ผรณกษม อินทรทัต",
     department: "IE",
     classYear: 86,
@@ -222,7 +241,7 @@ export const mentors: Mentor[] = [
     classYear: 74,
     position: "Strategy Professional",
     companyName: "TNI and Associates",
-    industries: [],
+    industries: ["commercial-and-marketing"],
     mentorYears: [9],
   },
   {
@@ -1165,7 +1184,7 @@ export const mentors: Mentor[] = [
     classYear: 87,
     position: "ผู้จัดการส่วนการลงทุนต่างประเทศ",
     companyName: "PTT Global Chemical Plc.",
-    industries: ["financial-and-investment"],
+    industries: ["engineering", "manufacturing", "financial-and-investment"],
     mentorYears: [1, 2, 3],
   },
   {
@@ -1185,8 +1204,10 @@ export const mentors: Mentor[] = [
     fullName: "รศ.ดร. ชัชชาติ สิทธิพันธุ์",
     department: "CIVIL",
     classYear: 67,
-    position: "ประธานเจ้าหน้าที่บริหาร และกรรมการผู้จัดการ",
-    companyName: "บริษัท ควอลิตีเฮาส์ จำกัด (มหาชน)",
+    // The sheet still had him at Quality Houses, which he left in 2022.
+    // Governor of Bangkok since May 2022, re-elected 28 June 2026.
+    position: "ผู้ว่าราชการกรุงเทพมหานคร",
+    companyName: "กรุงเทพมหานคร",
     industries: ["engineering"],
     mentorYears: [1, 2],
   },
@@ -1209,7 +1230,7 @@ export const mentors: Mentor[] = [
     classYear: 90,
     position: "กรรมการผู้จัดการ",
     companyName: "Rabbit Group",
-    industries: ["commercial-and-marketing"],
+    industries: ["commercial-and-marketing", "financial-and-investment"],
     mentorYears: [1, 2],
   },
   {
@@ -1253,7 +1274,7 @@ export const mentors: Mentor[] = [
     classYear: 78,
     position: "รองกรรมการผู้จัดการสายงานบริหาร",
     companyName: "Susco",
-    industries: ["engineering"],
+    industries: ["engineering", "commercial-and-marketing"],
     mentorYears: [1, 4],
   },
   {
@@ -1367,7 +1388,7 @@ export const mentors: Mentor[] = [
     classYear: 86,
     position: "Asia Process Development Manager",
     companyName: "Mars Petcare",
-    industries: ["manufacturing", "food-and-beverage"],
+    industries: ["engineering", "manufacturing", "food-and-beverage"],
     mentorYears: [2, 3, 4, 5],
   },
   {
@@ -1605,11 +1626,12 @@ export const mentors: Mentor[] = [
   },
 
   // ---------------------------------------------------------------------------
-  // mentor-128..135 — first-time ChAMP 9 mentors, added after the Champ9
+  // mentor-128..136 — first-time ChAMP 9 mentors, added after the Champ9
   // Airtable table gained new rows. Photos come from that table's
   // Profile_Picture attachments; run `node scripts/download-mentor-photos.mjs`
-  // to pull them into public/mentors/ (that script is scoped to these 8 only,
-  // so it will not overwrite the hand-picked images for mentor-01..71).
+  // to pull them into public/mentors/. That script is always scoped to just the
+  // mentors whose photo is still missing, and it skips any file already on
+  // disk, so it will not overwrite the hand-picked images for mentor-01..71.
   // Every one of them also has a company Logo attachment in Airtable that is
   // not wired up here — see `companyLogoUrl` in the notes at the top.
   // ---------------------------------------------------------------------------
@@ -1707,6 +1729,18 @@ export const mentors: Mentor[] = [
     position: "CEO",
     companyName: "SolarPPM Company Limited",
     industries: ["engineering"],
+    mentorYears: [9],
+  },
+  {
+    id: "mentor-136",
+    mentorPictureUrl: "/mentors/mentor-136.jpg",
+    nickname: "พี่มด",
+    fullName: "อิทธิพันธ์ เจียกเจิม",
+    department: "CIVIL",
+    classYear: 79,
+    position: "CFO",
+    companyName: "CLICX Bank PCL",
+    industries: ["financial-and-investment"],
     mentorYears: [9],
   },
 ];
