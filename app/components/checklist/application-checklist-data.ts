@@ -40,7 +40,7 @@ export const applicationStages: ApplicationStage[] = [
       },
       {
         id: "check-dates",
-        text: "ตรวจสอบว่าวันที่ 3, 4, 10 และ 11 Oct สะดวกเดินทางมาที่คณะฯ หรือไม่ เนื่องจากวันที่ 3, 4, 10 Oct เป็นวันคัดเลือกและวันที่ 11 Oct เป็นวันปฐมนิเทศหากผ่านเข้ารอบ",
+        text: "ตรวจสอบว่าวันที่ 3, 4, 10 และ 17 Oct สะดวกเดินทางมาที่คณะฯ หรือไม่ เนื่องจากวันที่ 3, 4, 10 Oct เป็นวันคัดเลือกและวันที่ 17 Oct เป็นวันปฐมนิเทศหากผ่านเข้ารอบ",
       },
       {
         id: "follow-social",
@@ -115,10 +115,10 @@ export const applicationStages: ApplicationStage[] = [
         id: "choose-mentor",
         text: "มีพี่ Mentor ที่สนใจแล้วหรือยัง",
       },
-      {
-        id: "pair-ranking",
-        text: "กรอกฟอร์ม Pair ranking เรียบร้อยแล้ว",
-      },
+      // {
+      //   id: "pair-ranking",
+      //   text: "กรอกฟอร์ม Pair ranking เรียบร้อยแล้ว",
+      // },
       {
         id: "shortlisting-dress-code",
         text: "เตรียมเครื่องแต่งกายแบบ Business Casual แล้ว",
@@ -161,7 +161,7 @@ export const applicationStages: ApplicationStage[] = [
     checklist: [
       {
         id: "room-bidding",
-        text: "กรอกฟอร์ม Room bidding เรียบร้อยแล้ว",
+        text: "กรอกฟอร์มที่แนบมาในอีเมลเรียบร้อยแล้ว",
       },
       {
         id: "intro-video",
