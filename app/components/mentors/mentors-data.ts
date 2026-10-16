@@ -98,7 +98,7 @@ export type Mentor = {
  *   people as the original Champ9/Champ7/Champ6 merge (so previously
  *   downloaded photo filenames keep matching); mentor-72..76 are the 5
  *   mentors that only appear in Champ8; mentor-77..127 are the ChAMP 1-5
- *   only mentors, appended in descending `#years` order; mentor-128..136 are
+ *   only mentors, appended in descending `#years` order; mentor-128..137 are
  *   first-time mentors added to the Champ9 table after that first merge, in
  *   the order they showed up there.
  * - `mentorPictureUrl` points at `/mentors/{id}.{ext}` for mentors 01..76 and
@@ -458,7 +458,7 @@ export const mentors: Mentor[] = [
     position: "Production Manager",
     companyName: "SCGP",
     industries: ["manufacturing"],
-    mentorYears: [7, 8, 9],
+    mentorYears: [7, 8],
   },
   {
     id: "mentor-28",
@@ -1626,7 +1626,7 @@ export const mentors: Mentor[] = [
   },
 
   // ---------------------------------------------------------------------------
-  // mentor-128..136 — first-time ChAMP 9 mentors, added after the Champ9
+  // mentor-128..137 — first-time ChAMP 9 mentors, added after the Champ9
   // Airtable table gained new rows. Photos come from that table's
   // Profile_Picture attachments; run `node scripts/download-mentor-photos.mjs`
   // to pull them into public/mentors/. That script is always scoped to just the
@@ -1741,6 +1741,19 @@ export const mentors: Mentor[] = [
     position: "CFO",
     companyName: "CLICX Bank PCL",
     industries: ["financial-and-investment"],
+    mentorYears: [9],
+  },
+  {
+    id: "mentor-137",
+    mentorPictureUrl: "/mentors/mentor-137.png",
+    nickname: "พี่ตู้",
+    fullName: "นาคร ธุระเจน",
+    department: "EE",
+    classYear: 87,
+    position:
+      "Manager - New Business Expansion, Consumer and Performance Packaging Business",
+    companyName: "SCG Packaging Public Company Limited",
+    industries: ["manufacturing"],
     mentorYears: [9],
   },
 ];
